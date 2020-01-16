@@ -14,10 +14,7 @@ public class OracleTableStorage implements TableStorage {
     public List<Table> getAll() {
         List<Table> tables = new ArrayList<Table>();
         try (Connection con = OracleConnection.getInstance().getConnection()) {
-            String query =  "SELECT \n" +
-                            "    table_name\n" +
-                            "FROM\n" +
-                            "    dba_tables;";
+            String query =  "SELECT table_name FROM USER_TABLES";
             PreparedStatement pstmt = con.prepareStatement(query);
             ResultSet dbResultSet = pstmt.executeQuery();
             System.out.println(con);
