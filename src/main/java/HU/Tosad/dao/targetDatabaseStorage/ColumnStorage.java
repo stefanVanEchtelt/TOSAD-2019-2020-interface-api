@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ColumnStorage {
     public List<Column> getAll();
-    public Column getByName(String name);
+    public List<Column> getByName(String name);
 }
