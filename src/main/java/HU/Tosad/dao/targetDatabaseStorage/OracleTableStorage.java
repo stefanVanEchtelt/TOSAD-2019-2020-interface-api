@@ -1,6 +1,7 @@
-package HU.Tosad.dao;
+package HU.Tosad.dao.targetDatabaseStorage;
 
-import HU.Tosad.model.Table;
+import HU.Tosad.table.Table;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,16 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository("oracleTableStorage")
 public class OracleTableStorage implements TableStorage {
     @Override
     public List<Table> getAll() {
-        List<Table> tables = new ArrayList<Table>();
-        try (Connection con = OracleConnection.getInstance().getConnection()) {
-            String query =  "SELECT table_name FROM USER_TABLES";
-            PreparedStatement pstmt = con.prepareStatement(query);
+        List<Table> tables = new ArrayList<>();
+        try (Connection con = OracleTargetDatabaseStorage.getInstance().getConnection()) {
+            String preparedQuery =  "SELECT table_name FROM USER_TABLES";
+            PreparedStatement pstmt = con.prepareStatement(preparedQuery);
             ResultSet dbResultSet = pstmt.executeQuery();
-            System.out.println(con);
+
             while (dbResultSet.next()) {
+                tables.add(new Table(dbResultSet.getString("table_name")));
                 dbResultSet.getString("table_name");
                 System.out.println(dbResultSet.getString("table_name"));
             }
@@ -32,4 +35,3 @@ public class OracleTableStorage implements TableStorage {
         return null;
     }
 }
-

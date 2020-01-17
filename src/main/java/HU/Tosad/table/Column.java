@@ -1,4 +1,4 @@
-package HU.Tosad.model;
+package HU.Tosad.table;
 
 public class Column {
 }
