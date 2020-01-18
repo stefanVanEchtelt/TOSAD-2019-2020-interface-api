@@ -13,7 +13,7 @@ public class OracleTableStorage implements TableStorage {
     @Override
     public List<Table> getAll() {
         List<Table> tables = new ArrayList<Table>();
-        try (Connection con = OracleConnection.getInstance().getConnection()) {
+        try (Connection con = OracleConnection.getInstance().getTargetConnection()) {
             String query =  "SELECT table_name FROM USER_TABLES";
             PreparedStatement pstmt = con.prepareStatement(query);
             ResultSet dbResultSet = pstmt.executeQuery();

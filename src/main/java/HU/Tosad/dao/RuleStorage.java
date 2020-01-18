@@ -1,11 +1,10 @@
 package HU.Tosad.dao;
 
-import HU.Tosad.model.BusinessRule;
-
+import HU.Tosad.model.Rule;
 import java.util.List;
 
-public interface BusinessRuleStorage {
+public interface RuleStorage {
 
-    public List<BusinessRule> getAll();
+    public List<Rule> getAll();
 }
 
