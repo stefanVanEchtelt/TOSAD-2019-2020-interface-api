@@ -1,17 +1,18 @@
-package HU.Tosad.dao;
+package HU.Tosad.dao.targetDatabaseStorage;
+
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class OracleConnection {
-    public static OracleConnection instance;
+public class OracleTargetDatabaseStorage implements TargetDatabaseConnection {
+    public static OracleTargetDatabaseStorage instance;
 
-
-    public static OracleConnection getInstance() {
-        if (OracleConnection.instance == null) {
-            OracleConnection.instance = new OracleConnection();
+    public static OracleTargetDatabaseStorage getInstance() {
+        if (OracleTargetDatabaseStorage.instance == null) {
+            OracleTargetDatabaseStorage.instance = new OracleTargetDatabaseStorage();
         }
-        return OracleConnection.instance;
+        return OracleTargetDatabaseStorage.instance;
     }
 
     public Connection getTargetConnection() {
@@ -42,4 +43,3 @@ public class OracleConnection {
         return result;
     }
 }
-
