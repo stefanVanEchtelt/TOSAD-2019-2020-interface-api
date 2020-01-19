@@ -1,6 +1,19 @@
-package HU.Tosad.model;
+package HU.Tosad.businessRule;
 
 public class BusinessRuleEventTrigger {
-    private BusinessRule businessRule;
-    private EventTriggerType eventTriggerType;
+    private int businessRuleId;
+    private int eventTriggerTypeId;
+
+    public BusinessRuleEventTrigger(int businessRuleId, int eventTriggerTypeId) {
+        this.businessRuleId = businessRuleId;
+        this.eventTriggerTypeId = eventTriggerTypeId;
+    }
+
+    public int getBusinessRuleId() {
+        return businessRuleId;
+    }
+
+    public int getEventTriggerTypeId() {
+        return eventTriggerTypeId;
+    }
 }

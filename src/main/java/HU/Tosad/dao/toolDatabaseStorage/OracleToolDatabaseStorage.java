@@ -1,18 +1,18 @@
-package HU.Tosad.dao.targetDatabaseStorage;
+package HU.Tosad.dao.toolDatabaseStorage;
 
-import org.springframework.stereotype.Repository;
+import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class OracleToolDatabaseStorage implements ToolDatabaseConnection {
-    public static OracleTargetDatabaseStorage instance;
+    public static OracleToolDatabaseStorage instance;
 
-    public static OracleTargetDatabaseStorage getInstance() {
-        if (OracleTargetDatabaseStorage.instance == null) {
-            OracleTargetDatabaseStorage.instance = new OracleTargetDatabaseStorage();
+    public static OracleToolDatabaseStorage getInstance() {
+        if (OracleToolDatabaseStorage.instance == null) {
+            OracleToolDatabaseStorage.instance = new OracleToolDatabaseStorage();
         }
-        return OracleTargetDatabaseStorage.instance;
+        return OracleToolDatabaseStorage.instance;
     }
 
     public Connection getConnection() {
