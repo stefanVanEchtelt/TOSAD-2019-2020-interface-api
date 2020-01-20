@@ -11,6 +11,7 @@ import javax.websocket.server.PathParam;
 
 @RequestMapping("/api/tosad/column")
 @RestController
+@CrossOrigin
 public class ColumnController {
 
     private final ColumnService columnService;
