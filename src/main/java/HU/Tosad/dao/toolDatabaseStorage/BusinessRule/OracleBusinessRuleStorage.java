@@ -86,7 +86,42 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
     }
 
     @Override
-    public BusinessRule getBusinessRuleByName(String name) {
-        return null;
+    public List<BusinessRule> getBusinessRulesByColumn(String name) {
+        return getBusinessRulesBy("ON_COLUMN", name);
+    }
+
+    @Override
+    public List<BusinessRule> getBusinessRulesByTable(String name) {
+        System.out.println(name);
+        return getBusinessRulesBy("ON_TABLE", name);
+    }
+
+    @Override
+    public BusinessRule getBusinessRulesByName(String name) {
+        List<BusinessRule> businessRules = getBusinessRulesBy("NAME", name);
+        BusinessRule businessRule = businessRules.get(0);
+        System.out.println(businessRule.getName());
+        return businessRule;
+    }
+
+    public List<BusinessRule> getBusinessRulesBy(String onWhat, String onWhatName) {
+        List<BusinessRule> BusinessRules = new ArrayList<>();
+        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+            String query =  "SELECT * from BUSINESS_RULES where " + onWhat + " = " + "'" + onWhatName +"'";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            System.out.println(query);
+
+            ResultSet dbResultSet = pstmt.executeQuery();
+            System.out.println(con);
+
+            while (dbResultSet.next()) {
+                int id = dbResultSet.getInt("id");
+                String name = dbResultSet.getString("name");
+                String onColumn = dbResultSet.getString("on_column");
+                String onTable = dbResultSet.getString("on_table");
+                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable));
+            }
+        } catch (SQLException sqle) { sqle.printStackTrace(); }
+        return BusinessRules;
     }
 }

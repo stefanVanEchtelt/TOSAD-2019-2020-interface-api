@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
+@CrossOrigin
 @RequestMapping("/api/tosad/businessRule/businessRule")
 @RestController
 public class BusinessRuleController {
@@ -41,6 +42,24 @@ public class BusinessRuleController {
     public Boolean delete(@PathVariable int businessRuleId) throws SQLException {
         BusinessRuleService.Delete(businessRuleId);
         return true;
+    }
+
+    @GetMapping(path="/businessRules/column/{name}")
+    public String getBusinessRulesByColumn(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByColumn(name));
+        return json;
+    }
+
+    @GetMapping(path="/businessRules/table/{name}")
+    public String getBusinessRulesByTable(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByTable(name));
+        return json;
+    }
+
+    @GetMapping(path="/businessRules/naam/{name}")
+    public String getBusinessRulesByName(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByName(name));
+        return json;
     }
 
 }

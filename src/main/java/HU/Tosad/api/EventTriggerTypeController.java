@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 
+@CrossOrigin
 @RequestMapping("/api/tosad/businessRule/eventTriggerType")
 @RestController
 public class EventTriggerTypeController {

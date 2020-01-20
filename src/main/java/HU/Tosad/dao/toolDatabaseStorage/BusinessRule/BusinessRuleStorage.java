@@ -10,6 +10,9 @@ public interface BusinessRuleStorage {
     public boolean Delete(int businessRuleId);
     public BusinessRule Update(BusinessRule br, int businessRuleId);
     public List<BusinessRule> getAll();
-    public BusinessRule getBusinessRuleByName(String name);
+    public BusinessRule getBusinessRulesByName(String name);
+    public List<BusinessRule> getBusinessRulesByColumn(String name);
+    public List<BusinessRule> getBusinessRulesByTable(String name);
+
 }
 

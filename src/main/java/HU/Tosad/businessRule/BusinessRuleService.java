@@ -1,9 +1,11 @@
 package HU.Tosad.businessRule;
 
 import HU.Tosad.dao.toolDatabaseStorage.BusinessRule.BusinessRuleStorage;
+import HU.Tosad.table.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -29,5 +31,17 @@ public class BusinessRuleService {
 
     public boolean Delete(int businessRuleId) throws SQLException {
         return businessRuleStorage.Delete(businessRuleId);
+    }
+
+    public List<BusinessRule> getBusinessRulesByColumn(String columnName) {
+        return businessRuleStorage.getBusinessRulesByColumn(columnName);
+    }
+
+    public List<BusinessRule> getBusinessRulesByTable(String tableName) {
+        return businessRuleStorage.getBusinessRulesByTable(tableName);
+    }
+
+    public BusinessRule getBusinessRulesByName(String BusinessRule) {
+        return businessRuleStorage.getBusinessRulesByName(BusinessRule);
     }
 }

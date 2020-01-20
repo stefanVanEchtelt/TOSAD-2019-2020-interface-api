@@ -17,7 +17,7 @@ public class ColumnService {
     public ColumnService(@Qualifier("oracleColumnStorage") ColumnStorage columnStorage) { this.columnStorage = columnStorage;}
 
     @PostMapping
-    public List<Column> getByName(String tableName) {
-        return columnStorage.getByName(tableName);
+    public List<Column> getByName(String columnName) {
+        return columnStorage.getByName(columnName);
     }
 }
