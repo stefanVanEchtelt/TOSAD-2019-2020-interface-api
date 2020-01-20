@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/tosad/table")
 @RestController
+@CrossOrigin
 public class TableController {
 
     private final TableService tableService;
