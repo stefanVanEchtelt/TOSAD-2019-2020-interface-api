@@ -2,34 +2,45 @@ package HU.Tosad.dao.toolDatabaseStorage.BusinessRule;
 
 import HU.Tosad.businessRule.BusinessRule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
+import HU.Tosad.dao.toolDatabaseStorage.Value.OracleValueStorage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleBusinessRuleStorage")
 public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
     @Override
-    public BusinessRule Save(BusinessRule businessRule){
-        //Database adds ID
+    public int Save(Map<String, String> businessRule){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+
+            JSONObject json = new JSONObject(businessRule);
+
             String query = "INSERT INTO BUSINESS_RULES (NAME, ON_COLUMN, ON_TABLE) VALUES (?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, businessRule.getName());
-            pstmt.setString(2, businessRule.getColumn());
-            pstmt.setString(3, businessRule.getTable());
+            pstmt.setString(1, json.getString("rule_name"));
+            pstmt.setString(2, json.getString("column1"));
+            pstmt.setString(3, json.getString("table1"));
             pstmt.executeQuery();
 
             pstmt.close();
-            return(businessRule);
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return businessRule;
+
+            //get BUSINESS_RULE_ID
+            String getIdRules = ("SELECT BUSINESS_RULE_ID_SEQ.currval FROM dual");
+            PreparedStatement pstmtGetId = con.prepareStatement(getIdRules);
+            ResultSet dbResultSet = pstmtGetId.executeQuery();
+            int businessRuleid = dbResultSet.getInt("id");
+            pstmtGetId.close();
+
+            return businessRuleid;
+        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
+        return 0;
     }
 
 

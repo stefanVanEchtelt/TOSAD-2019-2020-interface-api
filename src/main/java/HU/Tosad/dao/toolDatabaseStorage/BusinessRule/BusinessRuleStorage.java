@@ -3,10 +3,11 @@ package HU.Tosad.dao.toolDatabaseStorage.BusinessRule;
 import HU.Tosad.businessRule.BusinessRule;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BusinessRuleStorage {
 
-    public BusinessRule Save(BusinessRule br);
+    public int Save(Map<String, String> br);
     public boolean Delete(int businessRuleId);
     public BusinessRule Update(BusinessRule br, int businessRuleId);
     public List<BusinessRule> getAll();

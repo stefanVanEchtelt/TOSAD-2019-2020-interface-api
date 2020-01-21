@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
+</head>
+
+<body style="	background-image: url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left;	background-size: 100%;	background-repeat: repeat;">
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="display-3 text-center text-light">New rule on: name</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5" style="">
+    <div class="container p-2" style="	background-image: linear-gradient(to bottom, rgba(255,255,255, 1), rgba(255,255,255, 1));	background-position: top left;	background-size: 100%;	background-repeat: repeat;">
+      <div class="row">
+        <div class="col-md-12 p-3">
+          <form id="generate_rule">
+          	<div class="form-group" id="form_rule_name"><label>Name</label><input type="text" class="form-control" placeholder="Name" name="rule_name">
+            <div class="form-group" id="form_trigger"><label>Trigger</label><br>
+                <input class="form-check-input" type="checkbox" value="INSERT" id="trigger_insert" name="event_types[]" checked>
+                  <label class="form-check-label" for="trigger_insert">
+                    INSERT
+                  </label><br>
+                <input class="form-check-input" type="checkbox" value="UPDATE" id="trigger_update" name="event_types[]" checked>
+                  <label class="form-check-label" for="trigger_update">
+                    UPDATE
+                  </label><br>               
+                <input class="form-check-input" type="checkbox" value="DELETE" name="event_types[]" id="trigger_delete">
+                  <label class="form-check-label" for="trigger_delete">
+                    DELETE
+                  </label>                
+            </div>
+            <div class="form-group"> <label>Rule</label><br>
+              <select id="form_rule" name="rule">
+                <option value="-">-- Select a Rule --</option>
+                <option value="ARNG">Attribute Range Rule</option>
+                <option value="ACMP">Attribute Compare rule</option>
+                <option value="ALIS">Attribute List rule </option>
+                <option value="TCMP">Tuple Compare rule</option>
+                <option value="ICMP">Inter-Entity Compare rule</option>
+              </select>
+                <div class="form-group" id="form_group_operator_arng"><label>Operator</label><br>
+                  <select id="form_operator" name="operator">
+                    <option value="-">-- Select an Operator --</option>
+                    <option value="BETWEEN">BETWEEN</option>
+                    <option value="NOT BETWEEN">NOT BETWEEN</option>                                                                                              
+                  </select>
+                </div>
+                <div class="form-group" id="form_group_table"><label>Table 1</label><br>
+                  <select id="form_compare" name="table1">
+                    <option value="-">-- Select a Table --</option>
+                    <option value="compare"></option>
+                  </select>
+                </div>     
+                <div class="form-group" id="form_group_column"><label>Column 1</label><br>
+                  <select id="form_compare" name="column1">
+                    <option value="-">-- Select a Column --</option>
+                    <option value="compare"></option>
+                  </select>
+                </div> 
+                <div class="form-group" id="form_group_operator"><label>Operator</label><br>
+                  <select id="form_operator" name="operator">
+                    <option value="-">-- Select an Operator --</option>
+                    <option value="=">=</option>
+                    <option value="!=">!=</option>
+                    <option value=">">></option>
+                    <option value="<"><</option>
+                    <option value=">=">>=</option>
+                    <option value="<="><=</option>
+                    <option value="LIKE">LIKE</option>
+                    <option value="IS NULL">IS NULL</option>                                                                                                
+                  </select>
+                </div>
+                <div class="form-group" id="form_group_table2"><label>Table 2</label><br>
+                  <select id="form_compare" name="table2">
+                    <option value="-">-- Select a Table --</option>
+                    <option value="compare"></option>
+                  </select>
+                </div>                 
+                <div class="form-group" id="form_group_column2"><label>Column 2</label><br>
+                  <select id="form_compare" name="column2">
+                    <option value="-">-- Select a Column --</option>
+                    <option value="compare"></option>
+                  </select>
+                </div>   
+                <div class="form-group" id="form_group_value"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value1"></div>
+                <div class="form-group" id="form_group_value_extra"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value2"></div>
+                <div class="form-group" id="form_group_list"><label>In List</label><input type="text" class="form-control" placeholder="Example: apple, pear, banana"></div>
+                <div class="form-group"><label>Error</label><input type="text" class="form-control" placeholder="Error message" name="error"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <a class="btn btn-info" id="form_save">Save</a>
+      <a class="btn btn-info" href="table.html">Back</a>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="script/script.js"></script>
+    </div>
+  </div>
+</body>
+
+</html>

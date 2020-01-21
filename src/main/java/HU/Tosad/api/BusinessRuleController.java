@@ -1,14 +1,15 @@
 package HU.Tosad.api;
 
-import HU.Tosad.businessRule.BusinessRule;
-import HU.Tosad.businessRule.BusinessRuleService;
+import HU.Tosad.businessRule.*;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.Map;
 
-@CrossOrigin
+
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/tosad/businessRule/businessRule")
 @RestController
 public class BusinessRuleController {
@@ -18,6 +19,16 @@ public class BusinessRuleController {
     @Autowired
     public BusinessRuleController(BusinessRuleService businessRuleService) { this.BusinessRuleService = businessRuleService;}
 
+
+    @PostMapping
+    public Boolean addBusinessRule(@RequestParam Map<String, String> body) throws SQLException {
+        System.out.println(body);
+        int businessRuleId = BusinessRuleService.Save(body);
+        ValueService.addBusinessRule(body, RuleService.addBusinessRule(body, businessRuleId));
+        ValueService.addBusinessRule(body, businessRuleId);
+        return true;
+    }
+
     @GetMapping
     public String getAll() throws SQLException {
         String json = new Gson().toJson(BusinessRuleService.getAll());
@@ -25,11 +36,6 @@ public class BusinessRuleController {
         return json;
     }
 
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public Boolean Save(@RequestBody BusinessRule businessRule) throws SQLException {
-        BusinessRuleService.Save(businessRule);
-        return null;
-    }
 
     @PutMapping(value = "/{businessRuleId}", consumes = "application/json", produces = "application/json")
     public Boolean Update(@RequestBody BusinessRule businessRule, @PathVariable int businessRuleId) throws SQLException {

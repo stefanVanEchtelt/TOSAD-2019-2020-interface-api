@@ -1,14 +1,13 @@
 package HU.Tosad.businessRule;
 
 import HU.Tosad.dao.toolDatabaseStorage.BusinessRule.BusinessRuleStorage;
-import HU.Tosad.table.Column;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusinessRuleService {
@@ -21,7 +20,7 @@ public class BusinessRuleService {
         return businessRuleStorage.getAll();
     }
 
-    public BusinessRule Save(BusinessRule businessRule) throws SQLException{
+    public int Save(Map<String, String> businessRule) throws SQLException{
         return businessRuleStorage.Save(businessRule);
     }
 

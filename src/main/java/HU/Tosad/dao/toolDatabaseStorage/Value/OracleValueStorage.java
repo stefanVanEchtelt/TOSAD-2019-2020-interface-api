@@ -2,6 +2,8 @@ package HU.Tosad.dao.toolDatabaseStorage.Value;
 
 import HU.Tosad.businessRule.Value;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -10,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleValueStorage")
 public class OracleValueStorage implements ValueStorage {
@@ -31,6 +34,44 @@ public class OracleValueStorage implements ValueStorage {
             return(value);
         } catch (SQLException sqle) { sqle.printStackTrace(); }
         return value;
+    }
+
+    @Override
+    public boolean addBusinessRule(Map<String, String> body, int Rulesid){
+        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+
+            //make body easy to read
+            JSONObject json = new JSONObject(body);
+
+            //Database adds ValuesID
+            String query = "INSERT INTO \"VALUES\" (\"VALUE\", IS_COLUMN, SORT_ORDER, RULE_ID) VALUES (?, ?, ?, ?)";
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, json.getString("value1"));
+            pstmt.setString(2, json.getString("column1"));
+            pstmt.setString(3, json.getString("table1"));
+            pstmt.setInt(4, Rulesid);
+            pstmt.executeQuery();
+
+            pstmt.close();
+
+            //save second value if given
+            if (!json.getString("value2").equals("")){
+
+                String query2 = "INSERT INTO \"VALUES\" (\"VALUE\", IS_COLUMN, SORT_ORDER, RULE_ID) VALUES (?, ?, ?, ?)";
+                PreparedStatement pstmt2 = con.prepareStatement(query2);
+
+                pstmt2.setString(1, json.getString("value2"));
+                pstmt2.setString(2, json.getString("column2"));
+                pstmt2.setString(3, json.getString("table2"));
+                pstmt.setInt(4, Rulesid);
+                pstmt2.executeQuery();
+
+                pstmt2.close();
+            }
+            return true;
+        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
+        return false;
     }
 
 
@@ -74,7 +115,7 @@ public class OracleValueStorage implements ValueStorage {
             String query =  "SELECT * from \"VALUES\"";
             PreparedStatement pstmt = con.prepareStatement(query);
             ResultSet dbResultSet = pstmt.executeQuery();
-            System.out.println(con);
+
 
             while (dbResultSet.next()) {
                 int id = dbResultSet.getInt("id");

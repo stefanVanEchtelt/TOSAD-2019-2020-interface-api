@@ -2,6 +2,8 @@ package HU.Tosad.dao.toolDatabaseStorage.Rule;
 
 import HU.Tosad.businessRule.Rule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -10,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleRuleStorage")
 public class OracleRuleStorage implements RuleStorage {
@@ -30,6 +33,36 @@ public class OracleRuleStorage implements RuleStorage {
             return(rule);
         } catch (SQLException sqle) { sqle.printStackTrace(); }
         return rule;
+    }
+
+    @Override
+    public int addBusinessRule(Map<String, String> body, int businessRuleId){
+        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+
+            //make body easy to read
+            JSONObject json = new JSONObject(body);
+
+            //Database adds RuleID
+            String query = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, json.getString("value1"));
+            pstmt.setString(2, json.getString("column1"));
+            pstmt.setInt(3, businessRuleId);
+            pstmt.executeQuery();
+
+            pstmt.close();
+
+            //get RULEID
+            String getIdRules = ("SELECT RULES_ID_SEQ.currval FROM dual");
+            PreparedStatement pstmtGetId = con.prepareStatement(getIdRules);
+            ResultSet dbResultSet = pstmtGetId.executeQuery();
+            int Rulesid = dbResultSet.getInt("id");
+            pstmtGetId.close();
+
+            return Rulesid;
+        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
+        return 0;
     }
 
 

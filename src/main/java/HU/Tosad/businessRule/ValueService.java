@@ -7,16 +7,21 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ValueService {
-    private final ValueStorage valueStorage;
+    private static ValueStorage valueStorage = null;
 
     @Autowired
     public ValueService(@Qualifier("OracleValueStorage") ValueStorage valueStorage) { this.valueStorage = valueStorage;}
 
     public List<Value> getAll() throws SQLException {
         return valueStorage.getAll();
+    }
+
+    public static boolean addBusinessRule(Map<String, String> body, int rulesid) throws SQLException{
+        return valueStorage.addBusinessRule(body, rulesid);
     }
 
     public Value Save(Value value) throws SQLException{
