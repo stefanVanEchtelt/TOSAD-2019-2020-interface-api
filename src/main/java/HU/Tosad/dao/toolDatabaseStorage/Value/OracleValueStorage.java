@@ -37,43 +37,62 @@ public class OracleValueStorage implements ValueStorage {
     }
 
     @Override
-    public boolean addBusinessRule(Map<String, String> body, int Rulesid){
+    public boolean addBusinessRule(Map<String, String> body, List<Integer> Rulesids) throws JSONException {
+        if(Rulesids.get(1) != 0){
+            addBusinessRuleSub(body, Rulesids.get(0));
+            addBusinessRuleSub(body, Rulesids.get(1));
+        }
+        else{
+            addBusinessRuleSub(body, Rulesids.get(0));
+        }
+        return true;
+    }
+
+    private boolean addBusinessRuleSub(Map<String, String> body, int Rulesid) throws JSONException {
+
+        JSONObject json = new JSONObject(body);
+
+        //every ruleType has it's own way of Storing
+        String ruleType = json.getString("rule");
+
+        //storing Attribute compare Rule and Attribute List Rule
+        if (ruleType.equals("ACMP") || ruleType.equals("ALIS")) {
+            StoreBusinessRule(json.getString("value1"), 0, 1, Rulesid);
+        }
+
+        //storing Attribute Range Rule
+        else if (ruleType.equals("ARNG")) {
+            StoreBusinessRule(json.getString("value1"), 0, 1, Rulesid);
+            StoreBusinessRule(json.getString("value2"), 0, 2, Rulesid);
+        }
+
+        //storing Tuple Compare Rule and inter-entity Tuple compare Rule
+        else if (ruleType.equals("TCMP") ||ruleType.equals("ICMP")) {
+            StoreBusinessRule(json.getString("table1"+"."+ json.getString("column1")), 1, 1, Rulesid);
+            StoreBusinessRule(json.getString("table2"+"."+ json.getString("column2")), 1, 2, Rulesid);
+        }
+        return true;
+    }
+
+    private boolean StoreBusinessRule(String value, int isColumn, int sort_order, int ruleID) {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
-            //make body easy to read
-            JSONObject json = new JSONObject(body);
-
-            //Database adds ValuesID
             String query = "INSERT INTO \"VALUES\" (\"VALUE\", IS_COLUMN, SORT_ORDER, RULE_ID) VALUES (?, ?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, json.getString("value1"));
-            pstmt.setString(2, json.getString("column1"));
-            pstmt.setString(3, json.getString("table1"));
-            pstmt.setInt(4, Rulesid);
+            pstmt.setString(1, value);
+            pstmt.setInt(2, isColumn);
+            pstmt.setInt(3, sort_order);
+            pstmt.setInt(4, ruleID);
             pstmt.executeQuery();
 
             pstmt.close();
-
-            //save second value if given
-            if (!json.getString("value2").equals("")){
-
-                String query2 = "INSERT INTO \"VALUES\" (\"VALUE\", IS_COLUMN, SORT_ORDER, RULE_ID) VALUES (?, ?, ?, ?)";
-                PreparedStatement pstmt2 = con.prepareStatement(query2);
-
-                pstmt2.setString(1, json.getString("value2"));
-                pstmt2.setString(2, json.getString("column2"));
-                pstmt2.setString(3, json.getString("table2"));
-                pstmt.setInt(4, Rulesid);
-                pstmt2.executeQuery();
-
-                pstmt2.close();
-            }
             return true;
-        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
-        return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-
 
     @Override
     public boolean Delete(int valueId){

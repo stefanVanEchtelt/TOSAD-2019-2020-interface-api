@@ -23,7 +23,6 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
             String query = "INSERT INTO BUSINESS_RULES (NAME, ON_COLUMN, ON_TABLE) VALUES (?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
-
             pstmt.setString(1, json.getString("rule_name"));
             pstmt.setString(2, json.getString("column1"));
             pstmt.setString(3, json.getString("table1"));

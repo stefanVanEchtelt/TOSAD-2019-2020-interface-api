@@ -1,6 +1,7 @@
 package HU.Tosad.businessRule;
 
 import HU.Tosad.dao.toolDatabaseStorage.Value.ValueStorage;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class ValueService {
         return valueStorage.getAll();
     }
 
-    public static boolean addBusinessRule(Map<String, String> body, int rulesid) throws SQLException{
-        return valueStorage.addBusinessRule(body, rulesid);
+    public static boolean addBusinessRule(Map<String, String> body, List<Integer> rulesids) throws SQLException, JSONException {
+        return valueStorage.addBusinessRule(body, rulesids);
     }
 
     public Value Save(Value value) throws SQLException{

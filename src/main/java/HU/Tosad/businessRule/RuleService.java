@@ -20,7 +20,7 @@ public class RuleService {
         return ruleStorage.getAll();
     }
 
-    public static int addBusinessRule(Map<String, String> body, int businessRuleId) throws SQLException{
+    public static List<Integer> addBusinessRule(Map<String, String> body, int businessRuleId) throws SQLException{
         return ruleStorage.addBusinessRule(body, businessRuleId);
     }
 

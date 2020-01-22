@@ -2,6 +2,8 @@ package HU.Tosad.dao.toolDatabaseStorage.BusinessRuleEventTrigger;
 
 import HU.Tosad.businessRule.BusinessRuleEventTrigger;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -10,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleBusinessRuleEventTriggerStorage")
 public class OracleBusinessRuleEventTriggerStorage implements BusinessRuleEventTriggerStorage {
@@ -31,6 +34,24 @@ public class OracleBusinessRuleEventTriggerStorage implements BusinessRuleEventT
         return businessRuleEventTrigger;
     }
 
+    @Override
+    public boolean addBusinessRule(int businessRuleId, List<Integer> ettId){
+        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+            for(int ettid : ettId) {
+                //Database adds RuleID
+                String query = "INSERT INTO BUSINESS_RULE_TRIGGER_EVENTS (BUSINESS_RULES_ID, EVENT_TRIGGER_TYPE_ID) VALUES (?, ?)";
+                PreparedStatement pstmt = con.prepareStatement(query);
+
+                pstmt.setInt(1, businessRuleId);
+                pstmt.setInt(2, ettid);
+                pstmt.executeQuery();
+
+                pstmt.close();
+            }
+            return true;
+        } catch (SQLException sqle) { sqle.printStackTrace(); }
+        return false;
+    }
 
     @Override
     public boolean Delete(int businessRuleEventTriggerId){

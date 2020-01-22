@@ -2,6 +2,7 @@ package HU.Tosad.api;
 
 import HU.Tosad.businessRule.*;
 import com.google.gson.Gson;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +22,12 @@ public class BusinessRuleController {
 
 
     @PostMapping
-    public Boolean addBusinessRule(@RequestParam Map<String, String> body) throws SQLException {
+    public Boolean addBusinessRule(@RequestParam Map<String, String> body) throws SQLException, JSONException {
         System.out.println(body);
         int businessRuleId = BusinessRuleService.Save(body);
         ValueService.addBusinessRule(body, RuleService.addBusinessRule(body, businessRuleId));
-        ValueService.addBusinessRule(body, businessRuleId);
+        BusinessRuleEventTriggerService.addBusinessRule(businessRuleId, EventTriggerTypeService.addBusinessRule(body));
+        FailureService.addBusinessRule(body, businessRuleId);
         return true;
     }
 

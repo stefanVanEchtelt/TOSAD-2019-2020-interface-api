@@ -8,12 +8,12 @@
   <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
 </head>
 
-<body style="background-image: url(&quot;https://pingendo.com/site-assets/cover.jpg&quot;);	background-position: top left;	background-size: 100%;	background-repeat: repeat;">
-  <div class="py-5">
+<body style="	background-image: url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left;	background-size: 100%;	background-repeat: repeat;">
+  <div class="py-5" style="">
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h1 class="display-2 text-light text-center">Business Rule Generator</h1>
+          <h1 class="display-3 text-light text-center" id="table_name">x</h1>
         </div>
       </div>
     </div>
@@ -22,19 +22,27 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active list-group-item-info">Tables</a>
-            <a href="table.html" class="list-group-item list-group-item-action">Employee</a>
-            <a href="table.html" class="list-group-item list-group-item-action">Customer</a>
-            <a href="table.html" class="list-group-item list-group-item-action">Product</a>
+          <div class="table-responsive">
+            <table class="table table-bordered ">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="">Attribute</th>
+                  <th class="text-center">Rules</th>
+                  <th class="text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="column_table__body_data"></tbody>
+            </table>
           </div>
         </div>
       </div>
+      <td class="table-light text-center"><a class="btn btn-info" href="index.html">Terug</a></td>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous" style=""></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="script/column.js"></script>
 </body>
 
 </html>
