@@ -8,12 +8,14 @@ public class BusinessRule {
     private String name;
     private String column;
     private String table;
+    private int isExecuted;
 
-    public BusinessRule(int id, String name, String onColumn, String onTable) {
+    public BusinessRule(int id, String name, String onColumn, String onTable, int isExecuted) {
         this.id = id;
         this.name = name;
         this.column = onColumn;
         this.table = onTable;
+        this.isExecuted = isExecuted;
     }
 
     public static List<BusinessRule> getAll() {
@@ -36,4 +38,6 @@ public class BusinessRule {
     public String getTable() {
         return table;
     }
+
+    public int getIsExecuted() { return isExecuted; }
 }

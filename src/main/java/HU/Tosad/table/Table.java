@@ -15,4 +15,8 @@ public class Table {
         List<Table> tables = new ArrayList<Table>();
         return tables;
     }
+
+    public String getName(){
+        return name;
+    }
 }

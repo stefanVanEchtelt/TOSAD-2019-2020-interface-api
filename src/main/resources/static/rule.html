@@ -25,15 +25,15 @@
           <form id="generate_rule">
           	<div class="form-group" id="form_rule_name"><label>Name</label><input type="text" class="form-control" placeholder="Name" name="rule_name">
             <div class="form-group" id="form_trigger"><label>Trigger</label><br>
-                <input class="form-check-input" type="checkbox" value="INSERT" id="trigger_insert" name="event_types_insert" checked>
+                <input class="form-check-input" type="checkbox" value="INSERT" id="trigger_insert" name="event_types[]" checked>
                   <label class="form-check-label" for="trigger_insert">
                     INSERT
                   </label><br>
-                <input class="form-check-input" type="checkbox" value="UPDATE" id="trigger_update" name="event_types_update" checked>
+                <input class="form-check-input" type="checkbox" value="UPDATE" id="trigger_update" name="event_types[]" checked>
                   <label class="form-check-label" for="trigger_update">
                     UPDATE
                   </label><br>               
-                <input class="form-check-input" type="checkbox" value="DELETE" name="event_types_insert" id="trigger_delete">
+                <input class="form-check-input" type="checkbox" value="DELETE" name="event_types[]" id="trigger_delete">
                   <label class="form-check-label" for="trigger_delete">
                     DELETE
                   </label>                
@@ -48,34 +48,41 @@
                 <option value="ICMP">Inter-Entity Compare rule</option>
               </select>
                 <div class="form-group" id="form_group_operator_arng"><label>Operator</label><br>
-                  <select id="form_operator" name="comparison_operator">
+                  <select id="form_operator" name="operator">
                     <option value="-">-- Select an Operator --</option>
                     <option value="BETWEEN">BETWEEN</option>
                     <option value="NOT BETWEEN">NOT BETWEEN</option>                                                                                              
                   </select>
-                </div> 
-                <div class="form-group" id="form_group_column"><label>Column</label><br>
+                </div>
+                <div class="form-group" id="form_group_table"><label>Table 1</label><br>
+                  <select id="table1" name="table1">
+                    <option value="-">-- Select a Table --</option>
+                  </select>
+                </div>     
+                <div class="form-group" id="form_group_column"><label>Column 1</label><br>
                   <select id="column1" name="column1">
                     <option value="-">-- Select a Column --</option>
                   </select>
                 </div> 
                 <div class="form-group" id="form_group_operator"><label>Operator</label><br>
-                  <select id="form_operator" name="relational_operator">
+                  <select id="form_operator" name="operator">
                     <option value="-">-- Select an Operator --</option>
                     <option value="=">=</option>
                     <option value="!=">!=</option>
                     <option value=">">></option>
                     <option value="<"><</option>
                     <option value=">=">>=</option>
-                    <option value="<="><=</option>                                                                                                
+                    <option value="<="><=</option>
+                    <option value="LIKE">LIKE</option>
+                    <option value="IS NULL">IS NULL</option>                                                                                                
                   </select>
                 </div>
-                <div class="form-group" id="form_group_table"><label>Target Table</label><br>
-                  <select id="table" name="table">
+                <div class="form-group" id="form_group_table2"><label>Table 2</label><br>
+                  <select id="table2" name="table2">
                     <option value="-">-- Select a Table --</option>
                   </select>
                 </div>                 
-                <div class="form-group" id="form_group_column2"><label>Target Column</label><br>
+                <div class="form-group" id="form_group_column2"><label>Column 2</label><br>
                   <select id="column2" name="column2">
                     <option value="-">-- Select a Column --</option>
                   </select>
@@ -83,10 +90,9 @@
                 <div class="form-group" id="form_group_value"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value1"></div>
                 <div class="form-group" id="form_group_value_extra"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value2"></div>
                 <div class="form-group" id="form_group_list"><label>In List</label><input type="text" class="form-control" placeholder="Example: apple, pear, banana"></div>
-                <div class="form-group"><label>Error Message</label><input type="text" class="form-control" placeholder="Error message" name="error"></div>
-                <div class="form-group"><label>Error code</label><input type="number" class="form-control" placeholder="Error message" name="code"></div>
-                <input type="hidden" id="form_table" name="current_table">
-                <input type="hidden" id="form_column" name="current_column">
+                <div class="form-group"><label>Error</label><input type="text" class="form-control" placeholder="Error message" name="error"></div>
+                <input type="hidden" id="form_table">
+                <input type="hidden" id="form_column">
               </div>
             </div>
           </form>

@@ -3,10 +3,7 @@ package HU.Tosad.api;
 import HU.Tosad.table.TableService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RequestMapping("/api/tosad/table")
@@ -24,5 +21,12 @@ public class TableController {
         String json = new Gson().toJson(tableService.getAll());
         return json;
     }
+
+    @GetMapping(path="/{name}")
+    public String getForeignTables(@PathVariable("name") String name){
+        String json = new Gson().toJson(tableService.getForeignTables(name));
+        return json;
+    }
+
 
 }
