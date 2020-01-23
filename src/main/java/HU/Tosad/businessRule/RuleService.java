@@ -4,6 +4,8 @@ import HU.Tosad.dao.toolDatabaseStorage.Rule.RuleStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import businessRuleBuilder.BusinessRuleGenerator;
+import businessRuleBuilder.OracleBusinessRuleGenerator;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -34,6 +36,16 @@ public class RuleService {
 
     public boolean Delete(int ruleId) throws SQLException {
         return ruleStorage.Delete(ruleId);
+    }
+
+    public String Example(int ruleId) {
+        BusinessRuleGenerator x = new OracleBusinessRuleGenerator();
+        return x.example(ruleId);
+    }
+
+    public Boolean Execute(int ruleId) {
+        BusinessRuleGenerator businessRuleGenerator = new OracleBusinessRuleGenerator();
+        return businessRuleGenerator.execute(ruleId);
     }
 
 }
