@@ -18,4 +18,5 @@ public class TableService {
     public List<Table> getAll() {
         return tableStorage.getAll();
     }
+    public List<Table> getForeignTables(String name) { return tableStorage.getForeignByTable(name); }
 }
