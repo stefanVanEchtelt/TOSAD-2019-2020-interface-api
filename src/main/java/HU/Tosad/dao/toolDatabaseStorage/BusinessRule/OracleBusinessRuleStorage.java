@@ -2,30 +2,30 @@ package HU.Tosad.dao.toolDatabaseStorage.BusinessRule;
 
 import HU.Tosad.businessRule.BusinessRule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
-import HU.Tosad.dao.toolDatabaseStorage.Value.OracleValueStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
 
+import javax.ws.rs.core.MultivaluedMap;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Repository("OracleBusinessRuleStorage")
 public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
     @Override
-    public int Save(Map<String, String> businessRule){
+    public int Save(MultiValueMap<String, String> businessRule){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
             JSONObject json = new JSONObject(businessRule);
 
             String query = "INSERT INTO BUSINESS_RULES (NAME, ON_COLUMN, ON_TABLE) VALUES (?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setString(1, json.getString("rule_name"));
-            pstmt.setString(2, json.getString("column1"));
-            pstmt.setString(3, json.getString("table1"));
+            pstmt.setString(1, removeBrackString(json.getString("rule_name")));
+            pstmt.setString(2, removeBrackString(json.getString("current_column")));
+            pstmt.setString(3, removeBrackString(json.getString("current_table")));
             pstmt.executeQuery();
 
             pstmt.close();
@@ -34,12 +34,25 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
             String getIdRules = ("SELECT BUSINESS_RULE_ID_SEQ.currval FROM dual");
             PreparedStatement pstmtGetId = con.prepareStatement(getIdRules);
             ResultSet dbResultSet = pstmtGetId.executeQuery();
-            int businessRuleid = dbResultSet.getInt("id");
+            dbResultSet.next();
+            int businessRuleid = dbResultSet.getInt("currval");
             pstmtGetId.close();
 
             return businessRuleid;
         } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
         return 0;
+    }
+
+
+    private int removeBrackInt(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("[\\[\\]]","");
+        int num = Integer.parseInt(remBrackString);
+        return num;
+    }
+
+    private String removeBrackString(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("[\\[\\]]","");
+        return remBrackString;
     }
 
 

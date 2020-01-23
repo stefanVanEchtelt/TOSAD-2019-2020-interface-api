@@ -5,12 +5,14 @@ import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,21 +36,38 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
     }
 
     @Override
-    public List<Integer> addBusinessRule(Map<String, String> body) throws JSONException {
+    public List<Integer> addBusinessRule(MultiValueMap<String, String> body) throws JSONException {
+        String ettInsert = "";
+        String ettUpdate = "";
+        String ettDelete = "";
 
         //make body easy to read
         JSONObject json = new JSONObject(body);
-        List<Integer> ettIds = null;
-        String ett = json.getString("event_types[]");
-        if(ett.contains("INSERT")){
+        Iterator<String> keys = json.keys();
+        List<Integer> ettIds = new ArrayList<>();
+
+        while(keys.hasNext()){
+            String key = keys.next();
+            if(key.equals("event_types_insert")){
+                ettInsert = "INSERT";
+            }
+            if(key.equals("event_types_delete")){
+                ettDelete = "DELETE";
+            }
+            if(key.equals("event_types_update")){
+                ettUpdate = "UPDATE";
+            }
+        }
+
+        if(ettInsert.contains("INSERT")){
             ettIds.add(addBusinessRuleSub("INSERT"));
-        }
-        if(ett.contains("UPDATE")){
+        }else{}
+        if(ettUpdate.contains("UPDATE")){
             ettIds.add(addBusinessRuleSub("UPDATE"));
-        }
-        if(ett.contains("DELETE")){
+        }else{}
+        if(ettDelete.contains("DELETE")){
             ettIds.add(addBusinessRuleSub("DELETE"));
-        }
+        }else{}
         return ettIds;
     }
 
@@ -67,9 +86,9 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
             String getIdEtt = ("SELECT EVENT_TRIGGER_TYPES_ID_SEQ.currval FROM dual");
             PreparedStatement pstmtGetId = con.prepareStatement(getIdEtt);
             ResultSet dbResultSet = pstmtGetId.executeQuery();
-            int ettId = dbResultSet.getInt("id");
+            dbResultSet.next();
+            int ettId = dbResultSet.getInt("currval");
             pstmtGetId.close();
-
             return ettId;
 
         } catch (SQLException sqle) { sqle.printStackTrace(); }

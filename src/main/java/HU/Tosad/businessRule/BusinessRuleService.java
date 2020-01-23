@@ -4,6 +4,7 @@ import HU.Tosad.dao.toolDatabaseStorage.BusinessRule.BusinessRuleStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +21,7 @@ public class BusinessRuleService {
         return businessRuleStorage.getAll();
     }
 
-    public int Save(Map<String, String> businessRule) throws SQLException{
+    public int Save(MultiValueMap<String, String> businessRule) throws SQLException{
         return businessRuleStorage.Save(businessRule);
     }
 

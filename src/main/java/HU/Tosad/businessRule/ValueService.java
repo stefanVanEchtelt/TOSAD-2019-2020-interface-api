@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,7 @@ public class ValueService {
         return valueStorage.getAll();
     }
 
-    public static boolean addBusinessRule(Map<String, String> body, List<Integer> rulesids) throws SQLException, JSONException {
+    public static boolean addBusinessRule(MultiValueMap<String, String> body, List<Integer> rulesids) throws SQLException, JSONException {
         return valueStorage.addBusinessRule(body, rulesids);
     }
 

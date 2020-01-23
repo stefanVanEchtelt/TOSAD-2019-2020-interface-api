@@ -5,6 +5,7 @@ import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,41 +38,54 @@ public class OracleValueStorage implements ValueStorage {
     }
 
     @Override
-    public boolean addBusinessRule(Map<String, String> body, List<Integer> Rulesids) throws JSONException {
-        if(Rulesids.get(1) != 0){
-            addBusinessRuleSub(body, Rulesids.get(0));
-            addBusinessRuleSub(body, Rulesids.get(1));
-        }
-        else{
-            addBusinessRuleSub(body, Rulesids.get(0));
+    public boolean addBusinessRule(MultiValueMap<String, String> body, List<Integer> Rulesids) throws JSONException {
+        for(int ruleid : Rulesids) {
+            if (ruleid != 0) {
+                addBusinessRuleSub(body, ruleid);
+            }
         }
         return true;
     }
 
-    private boolean addBusinessRuleSub(Map<String, String> body, int Rulesid) throws JSONException {
+    private boolean addBusinessRuleSub(MultiValueMap<String, String> body, int Ruleid) throws JSONException {
 
         JSONObject json = new JSONObject(body);
 
         //every ruleType has it's own way of Storing
-        String ruleType = json.getString("rule");
+        String ruleType = removeBrackString(json.getString("rule"));
 
-        //storing Attribute compare Rule and Attribute List Rule
-        if (ruleType.equals("ACMP") || ruleType.equals("ALIS")) {
-            StoreBusinessRule(json.getString("value1"), 0, 1, Rulesid);
+        //storing value Attribute compare Rule
+        if (ruleType.equals("ACMP")) {
+            StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
         }
 
-        //storing Attribute Range Rule
+        //storing value List Compare Rule
+        if (ruleType.equals("ALIS")) {
+            String[] values = removeBrackString(json.getString("value1")).split(", ");
+            int sortOrder = 1;
+            for(String value : values) {
+                StoreBusinessRule(value, 0, sortOrder, Ruleid);
+                sortOrder++;
+            }
+        }
+
+        //storing value Attribute Range Rule
         else if (ruleType.equals("ARNG")) {
-            StoreBusinessRule(json.getString("value1"), 0, 1, Rulesid);
-            StoreBusinessRule(json.getString("value2"), 0, 2, Rulesid);
+            StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
+            StoreBusinessRule(removeBrackString(json.getString("value2")), 0, 2, Ruleid);
         }
 
-        //storing Tuple Compare Rule and inter-entity Tuple compare Rule
-        else if (ruleType.equals("TCMP") ||ruleType.equals("ICMP")) {
-            StoreBusinessRule(json.getString("table1"+"."+ json.getString("column1")), 1, 1, Rulesid);
-            StoreBusinessRule(json.getString("table2"+"."+ json.getString("column2")), 1, 2, Rulesid);
+        //storing value Tuple Compare Rule and inter-entity Tuple compare Rule
+        else if (ruleType.equals("TCMP") || ruleType.equals("ICMP")) {
+            StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column1")), 1, 1, Ruleid);
+            StoreBusinessRule(removeBrackString(json.getString("table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
         }
         return true;
+    }
+
+    private String removeBrackString(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        return remBrackString;
     }
 
     private boolean StoreBusinessRule(String value, int isColumn, int sort_order, int ruleID) {
