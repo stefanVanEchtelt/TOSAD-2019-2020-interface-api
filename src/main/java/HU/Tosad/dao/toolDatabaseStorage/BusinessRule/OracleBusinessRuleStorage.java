@@ -89,7 +89,8 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
                 String name = dbResultSet.getString("name");
                 String onColumn = dbResultSet.getString("on_column");
                 String onTable = dbResultSet.getString("on_table");
-                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable));
+                int isExecuted = dbResultSet.getInt("is_executed");
+                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable, isExecuted));
             }
         } catch (SQLException sqle) { sqle.printStackTrace(); }
         return BusinessRules;
@@ -129,7 +130,8 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
                 String name = dbResultSet.getString("name");
                 String onColumn = dbResultSet.getString("on_column");
                 String onTable = dbResultSet.getString("on_table");
-                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable));
+                int isExecuted = dbResultSet.getInt("is_executed");
+                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable, isExecuted));
             }
         } catch (SQLException sqle) { sqle.printStackTrace(); }
         return BusinessRules;
