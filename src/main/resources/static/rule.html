@@ -13,7 +13,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h1 class="display-3 text-center text-light">New rule on: name</h1>
+          <h1 class="display-3 text-center text-light" id="head_name"></h1>
         </div>
       </div>
     </div>
@@ -55,15 +55,13 @@
                   </select>
                 </div>
                 <div class="form-group" id="form_group_table"><label>Table 1</label><br>
-                  <select id="form_compare" name="table1">
+                  <select id="table1" name="table1">
                     <option value="-">-- Select a Table --</option>
-                    <option value="compare"></option>
                   </select>
                 </div>     
                 <div class="form-group" id="form_group_column"><label>Column 1</label><br>
-                  <select id="form_compare" name="column1">
+                  <select id="column1" name="column1">
                     <option value="-">-- Select a Column --</option>
-                    <option value="compare"></option>
                   </select>
                 </div> 
                 <div class="form-group" id="form_group_operator"><label>Operator</label><br>
@@ -80,21 +78,21 @@
                   </select>
                 </div>
                 <div class="form-group" id="form_group_table2"><label>Table 2</label><br>
-                  <select id="form_compare" name="table2">
+                  <select id="table2" name="table2">
                     <option value="-">-- Select a Table --</option>
-                    <option value="compare"></option>
                   </select>
                 </div>                 
                 <div class="form-group" id="form_group_column2"><label>Column 2</label><br>
-                  <select id="form_compare" name="column2">
+                  <select id="column2" name="column2">
                     <option value="-">-- Select a Column --</option>
-                    <option value="compare"></option>
                   </select>
                 </div>   
                 <div class="form-group" id="form_group_value"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value1"></div>
                 <div class="form-group" id="form_group_value_extra"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value2"></div>
                 <div class="form-group" id="form_group_list"><label>In List</label><input type="text" class="form-control" placeholder="Example: apple, pear, banana"></div>
                 <div class="form-group"><label>Error</label><input type="text" class="form-control" placeholder="Error message" name="error"></div>
+                <input type="hidden" id="form_table">
+                <input type="hidden" id="form_column">
               </div>
             </div>
           </form>
@@ -106,6 +104,7 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
       <script src="script/script.js"></script>
+      <script src="script/rule.js"></script>
     </div>
   </div>
 </body>
