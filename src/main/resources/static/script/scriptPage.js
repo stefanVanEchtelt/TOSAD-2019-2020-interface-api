@@ -61,7 +61,7 @@ function getCardHtml(ruleName, ruleId) {
                             ruleName +
         "                   </pre>" +
         "              </p>" +
-        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=\"table.html\">Terug</a><a class=\"btn btn-info\" href=\"#.html\">Edit</a>\n" +
+        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "            </div>\n" +
         "          </div>\n" +
         "        </div>\n" +
