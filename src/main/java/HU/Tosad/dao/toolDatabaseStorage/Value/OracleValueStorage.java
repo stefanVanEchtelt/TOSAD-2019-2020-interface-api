@@ -75,14 +75,13 @@ public class OracleValueStorage implements ValueStorage {
             StoreBusinessRule(removeBrackString(json.getString("value2")), 0, 2, Ruleid);
         }
 
-        //storing value Tuple Compare Rule and inter-entity Tuple compare Rule
+        //storing value Tuple Compare Rule
         else if (ruleType.equals("TCMP")) {
             StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column1")), 1, 1, Ruleid);
             StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
         }
-
+        //storing inter-entity Tuple compare Rule
         else if (ruleType.equals("ICMP")) {
-            StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column1")), 1, 1, Ruleid);
             StoreBusinessRule(removeBrackString(json.getString("table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
         }
         return true;
