@@ -17,10 +17,10 @@ function getBusinessRules() {
         .then((ruleJson) => {
             let index;
             for (index = 0; index < ruleJson.length; index++){
-                if (ruleJson[index].isExecuted === 1) {
-                    } else {
+                // if (ruleJson[index].isExecuted === 1) {
+                //     } else {
                     let code = fetchCode(ruleJson[index].id);
-                }
+                // }
             }
             $("#"+3).click(function(){handleRun("ooooi")});
 
@@ -61,7 +61,7 @@ function getCardHtml(ruleName, ruleId) {
                             ruleName +
         "                   </pre>" +
         "              </p>" +
-        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
+        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=\"table.html\">Terug</a><a class=\"btn btn-info\" href=\"#.html\">Edit</a>\n" +
         "            </div>\n" +
         "          </div>\n" +
         "        </div>\n" +
