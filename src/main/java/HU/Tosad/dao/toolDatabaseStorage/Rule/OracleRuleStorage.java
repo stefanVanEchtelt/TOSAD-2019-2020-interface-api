@@ -84,15 +84,9 @@ public class OracleRuleStorage implements RuleStorage {
         return 0;
     }
 
-    private int removeBrackInt(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("\\p{P}","");
-        int num = Integer.parseInt(remBrackString);
-        return num;
-    }
 
     private String removeBrackString(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("\\p{P}","");
-        return remBrackString;
+        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
     }
 
     private int[] getTypeEid(JSONObject json) throws JSONException {

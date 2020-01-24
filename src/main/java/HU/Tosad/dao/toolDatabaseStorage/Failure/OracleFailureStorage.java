@@ -1,7 +1,6 @@
 package HU.Tosad.dao.toolDatabaseStorage.Failure;
 
 import HU.Tosad.businessRule.Failure;
-import HU.Tosad.businessRule.Rule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,12 +45,13 @@ public class OracleFailureStorage implements FailureStorage {
             JSONObject json = new JSONObject(body);
 
             //Database adds FailureID
-            String query = "INSERT INTO FAILURES (MESSAGE, CODE, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
+            String query = "INSERT INTO FAILURES (MESSAGE, CODE, BUSINESS_RULES_ID, NAME) VALUES (?, ?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
             pstmt.setString(1, removeBrackString(json.getString("error")));
             pstmt.setInt(2, removeBrackInt(json.getString("code")));
             pstmt.setInt(3, businessRuleId);
+            pstmt.setString(4, "FAILURENAME");
             pstmt.executeQuery();
 
             pstmt.close();
@@ -61,14 +61,13 @@ public class OracleFailureStorage implements FailureStorage {
     }
 
     private int removeBrackInt(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        String remBrackString = Stringnm.replaceAll("(\"|\\[|\\]|\")","");
         int num = Integer.parseInt(remBrackString);
         return num;
     }
 
     private String removeBrackString(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("\\p{P}","");
-        return remBrackString;
+        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
     }
 
     @Override

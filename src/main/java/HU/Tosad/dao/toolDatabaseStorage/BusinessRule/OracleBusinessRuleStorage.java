@@ -43,18 +43,9 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
         return 0;
     }
 
-
-    private int removeBrackInt(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("[\\[\\]]","");
-        int num = Integer.parseInt(remBrackString);
-        return num;
-    }
-
     private String removeBrackString(String Stringnm){
-        String remBrackString = Stringnm.replaceAll("[\\[\\]]","");
-        return remBrackString;
+        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
     }
-
 
     @Override
     public boolean Delete(int businessRuleId){
