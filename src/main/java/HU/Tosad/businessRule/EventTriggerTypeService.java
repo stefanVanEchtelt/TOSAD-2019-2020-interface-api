@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,7 @@ public class EventTriggerTypeService {
         return eventTriggerTypeStorage.getAll();
     }
 
-    public static List<Integer> addBusinessRule(Map<String, String> body) throws SQLException, JSONException {
+    public static List<Integer> addBusinessRule(MultiValueMap<String, String> body) throws SQLException, JSONException {
         return eventTriggerTypeStorage.addBusinessRule(body);
     }
 

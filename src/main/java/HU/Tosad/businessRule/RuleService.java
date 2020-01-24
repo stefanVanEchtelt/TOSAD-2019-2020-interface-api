@@ -1,11 +1,13 @@
 package HU.Tosad.businessRule;
 
 import HU.Tosad.dao.toolDatabaseStorage.Rule.RuleStorage;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import businessRuleBuilder.BusinessRuleGenerator;
 import businessRuleBuilder.OracleBusinessRuleGenerator;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,7 +24,7 @@ public class RuleService {
         return ruleStorage.getAll();
     }
 
-    public static List<Integer> addBusinessRule(Map<String, String> body, int businessRuleId) throws SQLException{
+    public static List<Integer> addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws SQLException, JSONException {
         return ruleStorage.addBusinessRule(body, businessRuleId);
     }
 

@@ -4,6 +4,7 @@ import HU.Tosad.dao.toolDatabaseStorage.Failure.FailureStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +21,7 @@ public class FailureService {
         return failureStorage.getAll();
     }
 
-    public static boolean addBusinessRule(Map<String, String> body, int businessRuleId) throws SQLException{
+    public static boolean addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws SQLException{
         return failureStorage.addBusinessRule(body, businessRuleId);
     }
 

@@ -5,6 +5,7 @@ import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,104 +37,118 @@ public class OracleRuleStorage implements RuleStorage {
     }
 
     @Override
-    public List<Integer> addBusinessRule(Map<String, String> body, int businessRuleId){
+    public List<Integer> addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws JSONException {
+
+        //make body easy to read
+        JSONObject json = new JSONObject(body);
+        int[] TypesEid = getTypeEid(json);
+
+        List<Integer> rulesIds = new ArrayList<Integer>();
+        int sortOrder = 1;
+        for(int typeEid : TypesEid){
+            System.out.println(typeEid);
+
+            if(typeEid !=0) {
+                rulesIds.add(addBusinessRuleSub(typeEid, sortOrder, businessRuleId));
+                sortOrder++;
+            }
+        }
+
+        return rulesIds;
+    }
+
+    private int addBusinessRuleSub(int typeEid, int sortOrder, int  businessRuleId){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-
-            //make body easy to read
-            JSONObject json = new JSONObject(body);
-
-            int[] TypeEid = getTypeEid(json);
 
             //Database adds RuleID
             String query = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setInt(1, TypeEid[0]);
-            pstmt.setInt(2, 1);
+            pstmt.setInt(1, typeEid);
+            pstmt.setInt(2, sortOrder);
             pstmt.setInt(3, businessRuleId);
             pstmt.executeQuery();
 
             pstmt.close();
 
-            //make list of ruleIds for fk in values
+            //get ruleIds for fk in values
             String getIdRules = ("SELECT RULES_ID_SEQ.currval FROM dual");
             PreparedStatement pstmtGetId = con.prepareStatement(getIdRules);
             ResultSet dbResultSet = pstmtGetId.executeQuery();
-            List<Integer> rulesIds = new ArrayList<Integer>();
-            rulesIds.add(dbResultSet.getInt("id"));
+            dbResultSet.next();
+            int ruleId = dbResultSet.getInt("currval");
             pstmtGetId.close();
 
-            if(TypeEid[1] != 0){
-                //Database adds RuleID
-                String query2 = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
-                PreparedStatement pstmt2 = con.prepareStatement(query2);
+            return ruleId;
+        } catch (SQLException sqle) { sqle.printStackTrace(); }
+        return 0;
+    }
 
-                pstmt2.setInt(1, TypeEid[1]);
-                pstmt2.setInt(2, 2);
-                pstmt2.setInt(3, businessRuleId);
-                pstmt2.executeQuery();
+    private int removeBrackInt(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        int num = Integer.parseInt(remBrackString);
+        return num;
+    }
 
-                pstmt.close();
-
-                //make list of ruleIds for fk in values
-                String getIdRules2 = ("SELECT RULES_ID_SEQ.currval FROM dual");
-                PreparedStatement pstmtGetId2 = con.prepareStatement(getIdRules2);
-                ResultSet dbResultSet2 = pstmtGetId2.executeQuery();
-                rulesIds.add(dbResultSet2.getInt("id"));
-                pstmtGetId2.close();
-            }
-
-            return rulesIds;
-        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
-        return null;
+    private String removeBrackString(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        return remBrackString;
     }
 
     private int[] getTypeEid(JSONObject json) throws JSONException {
-        String operator = json.getString("operator");
+        String relational_operator = removeBrackString(json.getString("relational_operator"));
+        String comparison_operator = removeBrackString(json.getString("comparison_operator"));
+        System.out.println(relational_operator);
+        System.out.println(comparison_operator);
         int TypeEid = 0;
         int TypeEid2 = 0;
+        int TypeEid3 = 0;
 
 
-        if(operator == ("=")) {
+        if(relational_operator.equals("=")) {
             TypeEid = 3;
         }
 
-        else if(operator == ("!=")) {
+        else if(relational_operator.equals("!=")) {
             TypeEid = 2;
             TypeEid2 = 3;
         }
 
-        else if(operator == (">")) {
+        else if(relational_operator.equals(">")) {
             TypeEid = 6;
         }
 
-        else if(operator == ("<")) {
+        else if(relational_operator.equals("<")) {
             TypeEid = 4;
         }
 
-        else if(operator == (">=")) {
+        else if(relational_operator.equals(">=")) {
             TypeEid = 6;
-            TypeEid2 = 3;
+            TypeEid2 = 1;
+            TypeEid3 = 3;
+
         }
 
-        else if(operator == ("<=")) {
+        else if(relational_operator.equals("<=")) {
             TypeEid = 4;
-            TypeEid2 = 3;
+            TypeEid2 = 1;
+            TypeEid3 = 3;
         }
 
-        else if(operator == ("LIKE")) {
-            TypeEid = 5;
+        else if(relational_operator.equals("LIKE")) {
+            TypeEid = 9;
         }
 
-        else if(operator == ("BETWEEN")) {
-            TypeEid = 7;
-        }
-
-        else if(operator == ("NOT BETWEEN")) {
+        else if(comparison_operator.equals("BETWEEN")) {
             TypeEid = 8;
         }
 
-        return new int[] {TypeEid, TypeEid2};
+        else if(comparison_operator.equals("NOT BETWEEN")) {
+            TypeEid = 2;
+            TypeEid2 = 8;
+        }
+
+        return new int[] {TypeEid, TypeEid2, TypeEid3};
     }
 
 

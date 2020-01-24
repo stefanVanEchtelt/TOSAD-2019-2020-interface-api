@@ -6,6 +6,7 @@ import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.MultiValueMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,20 +39,19 @@ public class OracleFailureStorage implements FailureStorage {
     }
 
     @Override
-    public boolean addBusinessRule(Map<String, String> body, int businessRuleId){
+    public boolean addBusinessRule(MultiValueMap<String, String> body, int businessRuleId){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
             //make body easy to read
             JSONObject json = new JSONObject(body);
 
             //Database adds FailureID
-            String query = "INSERT INTO FAILURES (MESSAGE, CODE, NAME, BUSINESS_RULES_ID) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO FAILURES (MESSAGE, CODE, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, json.getString("error"));
-            pstmt.setInt(2, json.getInt("code"));
-            pstmt.setString(3, json.getString("name"));
-            pstmt.setInt(4, businessRuleId);
+            pstmt.setString(1, removeBrackString(json.getString("error")));
+            pstmt.setInt(2, removeBrackInt(json.getString("code")));
+            pstmt.setInt(3, businessRuleId);
             pstmt.executeQuery();
 
             pstmt.close();
@@ -60,6 +60,16 @@ public class OracleFailureStorage implements FailureStorage {
         return false;
     }
 
+    private int removeBrackInt(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        int num = Integer.parseInt(remBrackString);
+        return num;
+    }
+
+    private String removeBrackString(String Stringnm){
+        String remBrackString = Stringnm.replaceAll("\\p{P}","");
+        return remBrackString;
+    }
 
     @Override
     public boolean Delete(int FailureId){
