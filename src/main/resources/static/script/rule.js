@@ -99,9 +99,24 @@ function sendRule(){
     let encData = new URLSearchParams(formData.entries());
 
     for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
+        console.log(pair[0]+ ', ' + pair[1]);
+        console.log(pair[0]+ ', ' + pair[1]);
     }
-    
- 
+
+    fetch('http://localhost:8080/api/tosad/businessRule/businessRule', {method: 'POST', body: encData})
+        .then((response) => {
+            if (response.ok) {
+                console.log(response.json());
+                window.location.replace("table.html");
+            }
+            else {
+                console.log(response.json());
+                alert(response.json());
+            }
+        })
+        .then((myJson) => {
+        });
+
+
 }
 

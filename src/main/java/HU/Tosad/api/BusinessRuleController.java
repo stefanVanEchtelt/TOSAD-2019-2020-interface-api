@@ -40,19 +40,10 @@ public class BusinessRuleController {
         return true;
     }
 
-    @GetMapping
-    public String getAll() throws SQLException {
-        String json = new Gson().toJson(BusinessRuleService.getAll());
-        System.out.println(json);
+    @GetMapping(path="/businessRules/id/{id}")
+    public String getBusinessRulesById(@PathVariable("id") int id) throws SQLException {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesById(id));
         return json;
-    }
-
-
-    @PutMapping(value = "/{businessRuleId}", consumes = "application/json", produces = "application/json")
-    public Boolean Update(@RequestBody BusinessRule businessRule, @PathVariable int businessRuleId) throws SQLException {
-
-        BusinessRuleService.Update(businessRule, businessRuleId);
-        return true;
     }
 
     @DeleteMapping(value = "/{businessRuleId}")
@@ -60,23 +51,4 @@ public class BusinessRuleController {
         BusinessRuleService.Delete(businessRuleId);
         return true;
     }
-
-    @GetMapping(path="/businessRules/column/{name}")
-    public String getBusinessRulesByColumn(@PathVariable("name") String name) {
-        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByColumn(name));
-        return json;
-    }
-
-    @GetMapping(path="/businessRules/table/{name}")
-    public String getBusinessRulesByTable(@PathVariable("name") String name) {
-        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByTable(name));
-        return json;
-    }
-
-    @GetMapping(path="/businessRules/naam/{name}")
-    public String getBusinessRulesByName(@PathVariable("name") String name) {
-        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByName(name));
-        return json;
-    }
-
 }
