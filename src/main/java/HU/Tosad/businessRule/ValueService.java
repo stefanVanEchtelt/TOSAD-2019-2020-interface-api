@@ -18,10 +18,6 @@ public class ValueService {
     @Autowired
     public ValueService(@Qualifier("OracleValueStorage") ValueStorage valueStorage) { this.valueStorage = valueStorage;}
 
-    public List<Value> getAll() throws SQLException {
-        return valueStorage.getAll();
-    }
-
     public static boolean addBusinessRule(MultiValueMap<String, String> body, List<Integer> rulesids) throws SQLException, JSONException {
         return valueStorage.addBusinessRule(body, rulesids);
     }
@@ -29,15 +25,4 @@ public class ValueService {
         return valueStorage.getBusinessRuleById(businessRuleId);
     }
 
-    public Value Save(Value value) throws SQLException{
-        return valueStorage.Save(value);
-    }
-
-    public Value Update(Value value, int valueId) throws SQLException {
-        return valueStorage.Update(value, valueId);
-    }
-
-    public boolean Delete(int valueId) throws SQLException {
-        return valueStorage.Delete(valueId);
-    }
 }

@@ -16,23 +16,9 @@ public class BusinessRuleEventTriggerService {
     @Autowired
     public BusinessRuleEventTriggerService(@Qualifier("OracleBusinessRuleEventTriggerStorage") BusinessRuleEventTriggerStorage businessRuleEventTriggerStorage) { this.businessRuleEventTriggerStorage = businessRuleEventTriggerStorage;}
 
-    public List<BusinessRuleEventTrigger> getAll() throws SQLException {
-        return businessRuleEventTriggerStorage.getAll();
-    }
 
     public static boolean addBusinessRule(int businessRuleId, List<Integer> ettIds) throws SQLException{
         return businessRuleEventTriggerStorage.addBusinessRule(businessRuleId, ettIds);
     }
 
-    public BusinessRuleEventTrigger Save(BusinessRuleEventTrigger bret) throws SQLException{
-        return businessRuleEventTriggerStorage.Save(bret);
-    }
-
-//    public BusinessRuleEventTrigger Update(BusinessRuleEventTrigger bret, int businessRuleEventTriggerId) throws SQLException {
-//        return businessRuleEventTriggerStorage.Update(bret, businessRuleEventTriggerId);
-//    }
-
-    public boolean Delete(int businessRuleEventTriggerId) throws SQLException {
-        return businessRuleEventTriggerStorage.Delete(businessRuleEventTriggerId);
-    }
 }

@@ -21,24 +21,9 @@ public class FailureService {
         return failureStorage.getFailureById(id);
     }
 
-    public List<Failure> getAll() throws SQLException {
-        return failureStorage.getAll();
-    }
 
     public static boolean addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws SQLException{
         return failureStorage.addBusinessRule(body, businessRuleId);
-    }
-
-    public Failure Save(Failure failure) throws SQLException{
-        return failureStorage.Save(failure);
-    }
-
-    public Failure Update(Failure failure, int failureId) throws SQLException {
-        return failureStorage.Update(failure, failureId);
-    }
-
-    public boolean Delete(int failureId) throws SQLException {
-        return failureStorage.Delete(failureId);
     }
 
 }

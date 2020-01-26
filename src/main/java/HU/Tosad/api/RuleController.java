@@ -24,32 +24,6 @@ public class RuleController {
     @Autowired
     public RuleController(RuleService ruleService) { this.RuleService = ruleService;}
 
-    @GetMapping
-    public String getAll() throws SQLException {
-        String json = new Gson().toJson(RuleService.getAll());
-        System.out.println(json);
-        return json;
-    }
-
-    @PostMapping(consumes = "application/json", produces = "application/json")
-    public Boolean Save(@RequestBody Rule rule) throws SQLException {
-        RuleService.Save(rule);
-        return null;
-    }
-
-    @PutMapping(value = "/{ruleId}", consumes = "application/json", produces = "application/json")
-    public Boolean Update(@RequestBody Rule rule, @PathVariable int ruleId) throws SQLException {
-
-        RuleService.Update(rule, ruleId);
-        return true;
-    }
-
-    @DeleteMapping(value = "/{ruleId}")
-    public Boolean delete(@PathVariable int ruleId) throws SQLException {
-        RuleService.Delete(ruleId);
-        return true;
-    }
-
     @GetMapping(path="/businessRules/example/{ruleId}")
     public String getBusinessRuleExample(@PathVariable("ruleId") String ruleIdString) {
         int ruleId = Integer.parseInt(ruleIdString);
