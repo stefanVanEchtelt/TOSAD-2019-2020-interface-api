@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Repository("OracleRuleStorage")
 public class OracleRuleStorage implements RuleStorage {
@@ -42,33 +41,30 @@ public class OracleRuleStorage implements RuleStorage {
         //make body easy to read
         JSONObject json = new JSONObject(body);
         int[] TypesEid = getTypeEid(json);
-
+        String eventType = removeBrackString(json.getString("rule"));
         List<Integer> rulesIds = new ArrayList<Integer>();
         int sortOrder = 1;
         for(int typeEid : TypesEid){
-            System.out.println(typeEid);
-
             if(typeEid !=0) {
-                rulesIds.add(addBusinessRuleSub(typeEid, sortOrder, businessRuleId));
+                rulesIds.add(addBusinessRuleSub(typeEid, sortOrder, businessRuleId, eventType));
                 sortOrder++;
             }
         }
-
         return rulesIds;
     }
 
-    private int addBusinessRuleSub(int typeEid, int sortOrder, int  businessRuleId){
+    private int addBusinessRuleSub(int typeEid, int sortOrder, int  businessRuleId, String eventType){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
             //Database adds RuleID
-            String query = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
+            String query = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID, EVENT_TYPE) VALUES (?, ?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
-
             pstmt.setInt(1, typeEid);
             pstmt.setInt(2, sortOrder);
             pstmt.setInt(3, businessRuleId);
-            pstmt.executeQuery();
+            pstmt.setString(4, eventType);
 
+            pstmt.executeQuery();
             pstmt.close();
 
             //get ruleIds for fk in values
@@ -92,56 +88,57 @@ public class OracleRuleStorage implements RuleStorage {
     private int[] getTypeEid(JSONObject json) throws JSONException {
         String relational_operator = removeBrackString(json.getString("relational_operator"));
         String comparison_operator = removeBrackString(json.getString("comparison_operator"));
-        System.out.println(relational_operator);
-        System.out.println(comparison_operator);
         int TypeEid = 0;
         int TypeEid2 = 0;
         int TypeEid3 = 0;
 
-
-        if(relational_operator.equals("=")) {
-            TypeEid = 3;
+        if(!relational_operator.equals("")){
+            switch (relational_operator) {
+                case "=":
+                    TypeEid = 3;
+                    break;
+                case "!=":
+                    TypeEid = 2;
+                    TypeEid2 = 3;
+                    break;
+                case ">":
+                    TypeEid = 6;
+                    break;
+                case "<":
+                    TypeEid = 4;
+                    break;
+                case ">=":
+                    TypeEid = 6;
+                    TypeEid2 = 1;
+                    TypeEid3 = 3;
+                    break;
+                case "<=":
+                    TypeEid = 4;
+                    TypeEid2 = 1;
+                    TypeEid3 = 3;
+                    break;
+            }
+        }else {
+            switch (comparison_operator) {
+                case "LIKE":
+                    TypeEid = 9;
+                    break;
+                case "BETWEEN":
+                    TypeEid = 8;
+                    break;
+                case "NOT BETWEEN":
+                    TypeEid = 2;
+                    TypeEid2 = 8;
+                    break;
+                case "IN":
+                    TypeEid = 5;
+                    break;
+                case "NOT IN":
+                    TypeEid = 2;
+                    TypeEid2 = 5;
+                    break;
+            }
         }
-
-        else if(relational_operator.equals("!=")) {
-            TypeEid = 2;
-            TypeEid2 = 3;
-        }
-
-        else if(relational_operator.equals(">")) {
-            TypeEid = 6;
-        }
-
-        else if(relational_operator.equals("<")) {
-            TypeEid = 4;
-        }
-
-        else if(relational_operator.equals(">=")) {
-            TypeEid = 6;
-            TypeEid2 = 1;
-            TypeEid3 = 3;
-
-        }
-
-        else if(relational_operator.equals("<=")) {
-            TypeEid = 4;
-            TypeEid2 = 1;
-            TypeEid3 = 3;
-        }
-
-        else if(relational_operator.equals("LIKE")) {
-            TypeEid = 9;
-        }
-
-        else if(comparison_operator.equals("BETWEEN")) {
-            TypeEid = 8;
-        }
-
-        else if(comparison_operator.equals("NOT BETWEEN")) {
-            TypeEid = 2;
-            TypeEid2 = 8;
-        }
-
         return new int[] {TypeEid, TypeEid2, TypeEid3};
     }
 

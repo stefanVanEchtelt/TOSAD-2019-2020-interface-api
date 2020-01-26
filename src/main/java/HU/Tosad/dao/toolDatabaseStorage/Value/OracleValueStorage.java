@@ -61,7 +61,8 @@ public class OracleValueStorage implements ValueStorage {
 
         //storing value List Compare Rule
         if (ruleType.equals("ALIS")) {
-            String[] values = removeBrackString(json.getString("value1")).split(", ");
+            String[] values = json.getString("value1").split(", ");
+            System.out.println(values);
             int sortOrder = 1;
             for(String value : values) {
                 StoreBusinessRule(value, 0, sortOrder, Ruleid);
@@ -75,7 +76,7 @@ public class OracleValueStorage implements ValueStorage {
             StoreBusinessRule(removeBrackString(json.getString("value2")), 0, 2, Ruleid);
         }
 
-        //storing value Tuple Compare Rule and inter-entity Tuple compare Rule
+        //storing value Tuple Compare Rule
         else if (ruleType.equals("TCMP")) {
             StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column1")), 1, 1, Ruleid);
             StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
