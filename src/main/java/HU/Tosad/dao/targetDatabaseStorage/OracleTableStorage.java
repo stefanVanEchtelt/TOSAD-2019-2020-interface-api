@@ -23,7 +23,6 @@ public class OracleTableStorage implements TableStorage {
             while (dbResultSet.next()) {
                 tables.add(new Table(dbResultSet.getString("table_name")));
                 dbResultSet.getString("table_name");
-                System.out.println(dbResultSet.getString("table_name"));
             }
         } catch (SQLException sqle) { sqle.printStackTrace(); }
 

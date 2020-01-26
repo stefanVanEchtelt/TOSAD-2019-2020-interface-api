@@ -18,24 +18,11 @@ public class EventTriggerTypeService {
     @Autowired
     public EventTriggerTypeService(@Qualifier("OracleEventTriggerTypeStorage") EventTriggerTypeStorage eventTriggerTypeStorage) { this.eventTriggerTypeStorage = eventTriggerTypeStorage;}
 
-    public List<EventTriggerType> getAll() throws SQLException {
-        return eventTriggerTypeStorage.getAll();
+    public static Map<String, String> getBusinessRuleById(int businessRuleId){
+        return eventTriggerTypeStorage.getBusinessRuleById(businessRuleId);
     }
 
     public static List<Integer> addBusinessRule(MultiValueMap<String, String> body) throws SQLException, JSONException {
         return eventTriggerTypeStorage.addBusinessRule(body);
     }
-
-    public EventTriggerType Save(EventTriggerType eventTriggerType) throws SQLException{
-        return eventTriggerTypeStorage.Save(eventTriggerType);
-    }
-
-    public EventTriggerType Update(EventTriggerType eventTriggerType, int eventTriggerTypeId) throws SQLException {
-        return eventTriggerTypeStorage.Update(eventTriggerType, eventTriggerTypeId);
-    }
-
-    public boolean Delete(int eventTriggerTypeId) throws SQLException {
-        return eventTriggerTypeStorage.Delete(eventTriggerTypeId);
-    }
-
 }

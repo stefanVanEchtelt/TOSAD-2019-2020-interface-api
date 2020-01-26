@@ -40,19 +40,17 @@ public class BusinessRuleController {
         return true;
     }
 
-    @GetMapping
-    public String getAll() throws SQLException {
-        String json = new Gson().toJson(BusinessRuleService.getAll());
-        System.out.println(json);
+    @GetMapping(path="/businessRules/id/{id}")
+    public String getBusinessRulesById(@PathVariable("id") int id) throws SQLException {
+        Map<String, String> BusinessRuleInf = new HashMap<>();
+        BusinessRuleInf.putAll(BusinessRuleService.getBusinessRulesById(id));
+        BusinessRuleInf.putAll(FailureService.getBusinessRulesById(id));
+        BusinessRuleInf.putAll(EventTriggerTypeService.getBusinessRuleById(id));
+        BusinessRuleInf.putAll(RuleService.getBusinessRuleById(id));
+        BusinessRuleInf.putAll(ValueService.getBusinessRuleById(id));
+
+        String json = new Gson().toJson(BusinessRuleInf);
         return json;
-    }
-
-
-    @PutMapping(value = "/{businessRuleId}", consumes = "application/json", produces = "application/json")
-    public Boolean Update(@RequestBody BusinessRule businessRule, @PathVariable int businessRuleId) throws SQLException {
-
-        BusinessRuleService.Update(businessRule, businessRuleId);
-        return true;
     }
 
     @DeleteMapping(value = "/{businessRuleId}")
@@ -78,5 +76,4 @@ public class BusinessRuleController {
         String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByName(name));
         return json;
     }
-
 }

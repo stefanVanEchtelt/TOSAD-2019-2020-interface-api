@@ -1,6 +1,7 @@
 package HU.Tosad.businessRule;
 
 import HU.Tosad.dao.toolDatabaseStorage.BusinessRule.BusinessRuleStorage;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,16 +18,12 @@ public class BusinessRuleService {
     @Autowired
     public BusinessRuleService(@Qualifier("OracleBusinessRuleStorage") BusinessRuleStorage businessRuleStorage) { this.businessRuleStorage = businessRuleStorage;}
 
-    public List<BusinessRule> getAll() throws SQLException {
-        return businessRuleStorage.getAll();
-    }
-
     public int Save(MultiValueMap<String, String> businessRule) throws SQLException{
         return businessRuleStorage.Save(businessRule);
     }
 
-    public BusinessRule Update(BusinessRule businessRule, int businessRuleId) throws SQLException {
-        return businessRuleStorage.Update(businessRule, businessRuleId);
+    public Map<String, String> getBusinessRulesById(int BusinessRuleId) throws SQLException {
+        return businessRuleStorage.getBusinessRulesById(BusinessRuleId);
     }
 
     public boolean Delete(int businessRuleId) throws SQLException {

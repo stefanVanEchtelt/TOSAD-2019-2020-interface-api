@@ -25,7 +25,6 @@ public class OracleColumnStorage implements ColumnStorage {
             ResultSet dbResultSet = pstmt.executeQuery();
             while (dbResultSet.next()){
                 columns.add(new Column(dbResultSet.getString("COLUMN_NAME")));
-                System.out.println(dbResultSet.getString("COLUMN_NAME"));
             }
 
         } catch (SQLException sqle) { sqle.printStackTrace(); }

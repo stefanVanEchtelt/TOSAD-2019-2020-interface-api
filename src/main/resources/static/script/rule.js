@@ -8,6 +8,7 @@ $(document).ready(function() {
     $("#form_table").val(tableName);
     $("#form_column").val(columnName);
     $("#head_name").html(columnName);
+    $('input[name="rule_name"]').val(tableName + '_' + columnName);
 
     fetch('http://localhost:8080/api/tosad/table/' + tableName, {method: 'GET'})
     .then((response) => {
@@ -27,10 +28,15 @@ $(document).ready(function() {
     });
 
     $("#form_rule").change(function(){
+        $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val());
         if($("#form_rule").val() == "TCMP"){
             getColumnsByTable(tableName, $("#column1"));
             getColumnsByTable(tableName, $("#column2"));    
         }        
+    });
+
+    $("select[name='comparison_operator']").change(function(){
+        $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val() + '_' + $("select[name='comparison_operator']").val());
     });
 });
 
@@ -99,22 +105,24 @@ function sendRule(){
     let encData = new URLSearchParams(formData.entries());
 
     for (var pair of formData.entries()) {
-    console.log(pair[0]+ ', ' + pair[1]); 
+        console.log(pair[0]+ ', ' + pair[1]);
+        console.log(pair[0]+ ', ' + pair[1]);
     }
-    
-   fetch('http://localhost:8080/api/tosad/businessRule/businessRule', {method: 'POST', body: encData})
-    .then((response) => { 
-        if (response.ok) {
-            console.log(response.json());
-            console.log("testtt")
-            window.location.replace("table.html");
-        } 
-        else {
-            console.log(response.json());
-            alert(response.json());
-        }
-    })
-    .then((myJson) => {
-    });  
+
+    fetch('http://localhost:8080/api/tosad/businessRule/businessRule', {method: 'POST', body: encData})
+        .then((response) => {
+            if (response.ok) {
+                console.log(response.json());
+                window.location.replace("table.html");
+            }
+            else {
+                console.log(response.json());
+                alert(response.json());
+            }
+        })
+        .then((myJson) => {
+        });
+
+
 }
 

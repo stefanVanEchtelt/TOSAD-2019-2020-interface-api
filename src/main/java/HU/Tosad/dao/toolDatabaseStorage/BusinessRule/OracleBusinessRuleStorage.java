@@ -7,16 +7,17 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
 
-import javax.ws.rs.core.MultivaluedMap;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleBusinessRuleStorage")
 public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
     @Override
-    public int Save(MultiValueMap<String, String> businessRule){
+    public int Save(MultiValueMap<String, String> businessRule) {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
             JSONObject json = new JSONObject(businessRule);
@@ -39,16 +40,19 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
             pstmtGetId.close();
 
             return businessRuleid;
-        } catch (SQLException | JSONException sqle) { sqle.printStackTrace(); }
+        } catch (SQLException | JSONException sqle) {
+            sqle.printStackTrace();
+        }
         return 0;
     }
 
-    private String removeBrackString(String Stringnm){
-        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
+    //cleaning up dirty data
+    private String removeBrackString(String Stringnm) {
+        return Stringnm.replaceAll("(\"|\\[|\\]|\")", "");
     }
 
     @Override
-    public boolean Delete(int businessRuleId){
+    public boolean Delete(int businessRuleId) {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
             String query = "DELETE FROM BUSINESS_RULES WHERE ID=?";
             PreparedStatement pstmt = con.prepareStatement(query);
@@ -56,48 +60,33 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
             pstmt.executeQuery();
             pstmt.close();
             return true;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
         return false;
 
     }
 
     @Override
-    public BusinessRule Update(BusinessRule businessRule, int businessRuleId){
+    public Map<String, String> getBusinessRulesById(int businessRuleId) throws SQLException {
+        Map<String, String> BusinessRuleInf = new HashMap<>();
+
+        //get businessRule information
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "UPDATE BUSINESS_RULES SET NAME = ?, ON_COLUMN = ?, ON_TABLE = ? WHERE ID = ?";
+            String query = "SELECT * from BUSINESS_RULES where id = " + businessRuleId;
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, businessRule.getName());
-            pstmt.setString(2, businessRule.getColumn());
-            pstmt.setString(3, businessRule.getTable());
-            pstmt.setInt(4, businessRule.getId());
-
-            pstmt.executeQuery();
-            pstmt.close();
-            return businessRule;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return businessRule;
-    }
-
-    @Override
-    public List<BusinessRule> getAll() {
-        List<BusinessRule> BusinessRules = new ArrayList<>();
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query =  "SELECT * from BUSINESS_RULES";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            ResultSet dbResultSet = pstmt.executeQuery();
-            System.out.println(con);
-
-            while (dbResultSet.next()) {
-                int id = dbResultSet.getInt("id");
-                String name = dbResultSet.getString("name");
-                String onColumn = dbResultSet.getString("on_column");
-                String onTable = dbResultSet.getString("on_table");
-                int isExecuted = dbResultSet.getInt("is_executed");
-                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable, isExecuted));
+            ResultSet dbResultSetBR = pstmt.executeQuery();
+            while (dbResultSetBR.next()) {
+                BusinessRuleInf.put("id", dbResultSetBR.getString("id"));
+                BusinessRuleInf.put("rule_name", dbResultSetBR.getString("name"));
+                BusinessRuleInf.put("current_column", dbResultSetBR.getString("on_column"));
+                BusinessRuleInf.put("current_table", dbResultSetBR.getString("on_table"));
             }
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return BusinessRules;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return BusinessRuleInf;
     }
 
     @Override
@@ -107,7 +96,6 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
     @Override
     public List<BusinessRule> getBusinessRulesByTable(String name) {
-        System.out.println(name);
         return getBusinessRulesBy("ON_TABLE", name);
     }
 
@@ -115,7 +103,6 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
     public BusinessRule getBusinessRulesByName(String name) {
         List<BusinessRule> businessRules = getBusinessRulesBy("NAME", name);
         BusinessRule businessRule = businessRules.get(0);
-        System.out.println(businessRule.getName());
         return businessRule;
     }
 
@@ -124,20 +111,19 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
             String query =  "SELECT * from BUSINESS_RULES where " + onWhat + " = " + "'" + onWhatName +"'";
             PreparedStatement pstmt = con.prepareStatement(query);
-            System.out.println(query);
-
             ResultSet dbResultSet = pstmt.executeQuery();
-            System.out.println(con);
 
             while (dbResultSet.next()) {
                 int id = dbResultSet.getInt("id");
                 String name = dbResultSet.getString("name");
                 String onColumn = dbResultSet.getString("on_column");
                 String onTable = dbResultSet.getString("on_table");
-                int isExecuted = dbResultSet.getInt("is_executed");
-                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable, isExecuted));
+                int is_executed = dbResultSet.getInt("is_executed");
+
+                BusinessRules.add(new BusinessRule(id, name, onColumn, onTable, is_executed));
             }
         } catch (SQLException sqle) { sqle.printStackTrace(); }
         return BusinessRules;
     }
 }
+

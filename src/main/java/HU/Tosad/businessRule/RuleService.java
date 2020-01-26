@@ -10,6 +10,7 @@ import businessRuleBuilder.BusinessRuleGenerator;
 import businessRuleBuilder.OracleBusinessRuleGenerator;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -19,24 +20,13 @@ public class RuleService {
     @Autowired
     public RuleService(@Qualifier("OracleRuleStorage") RuleStorage ruleStorage) { this.ruleStorage = ruleStorage;}
 
-    public List<Rule> getAll() throws SQLException {
-        return ruleStorage.getAll();
-    }
 
     public static List<Integer> addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws SQLException, JSONException {
         return ruleStorage.addBusinessRule(body, businessRuleId);
     }
 
-    public Rule Save(Rule rule) throws SQLException{
-        return ruleStorage.Save(rule);
-    }
-
-    public Rule Update(Rule rule, int ruleId) throws SQLException {
-        return ruleStorage.Update(rule, ruleId);
-    }
-
-    public boolean Delete(int ruleId) throws SQLException {
-        return ruleStorage.Delete(ruleId);
+    public static Map<String, String> getBusinessRuleById(int businessRuleId) {
+        return ruleStorage.getBusinessRuleById(businessRuleId);
     }
 
     public String Example(int ruleId) {
