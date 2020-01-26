@@ -8,6 +8,7 @@ $(document).ready(function() {
     $("#form_table").val(tableName);
     $("#form_column").val(columnName);
     $("#head_name").html(columnName);
+    $('input[name="rule_name"]').val(tableName + '_' + columnName);
 
     fetch('http://localhost:8080/api/tosad/table/' + tableName, {method: 'GET'})
     .then((response) => {
@@ -27,10 +28,15 @@ $(document).ready(function() {
     });
 
     $("#form_rule").change(function(){
+        $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val());
         if($("#form_rule").val() == "TCMP"){
             getColumnsByTable(tableName, $("#column1"));
             getColumnsByTable(tableName, $("#column2"));    
         }        
+    });
+
+    $("select[name='comparison_operator']").change(function(){
+        $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val() + '_' + $("select[name='comparison_operator']").val());
     });
 });
 
