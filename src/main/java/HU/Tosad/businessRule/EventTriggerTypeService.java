@@ -21,6 +21,9 @@ public class EventTriggerTypeService {
     public List<EventTriggerType> getAll() throws SQLException {
         return eventTriggerTypeStorage.getAll();
     }
+    public static Map<String, String> getBusinessRuleById(int businessRuleId){
+        return eventTriggerTypeStorage.getBusinessRuleById(businessRuleId);
+    }
 
     public static List<Integer> addBusinessRule(MultiValueMap<String, String> body) throws SQLException, JSONException {
         return eventTriggerTypeStorage.addBusinessRule(body);

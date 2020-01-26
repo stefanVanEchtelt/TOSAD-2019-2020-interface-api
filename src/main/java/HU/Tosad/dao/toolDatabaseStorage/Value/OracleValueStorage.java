@@ -1,17 +1,15 @@
 package HU.Tosad.dao.toolDatabaseStorage.Value;
 
-import HU.Tosad.businessRule.Value;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,26 +17,8 @@ import java.util.Map;
 public class OracleValueStorage implements ValueStorage {
 
     @Override
-    public Value Save(Value value){
-        //Database adds ID
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "INSERT INTO \"VALUES\" (\"VALUE\", IS_COLUMN, SORT_ORDER, RULE_ID) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-            pstmt.setString(1, value.getValue());
-            pstmt.setInt(2, value.getIsColumn());
-            pstmt.setInt(3, value.getSortOrder());
-            pstmt.setInt(4, value.getRuleId());
-            pstmt.executeQuery();
-
-            pstmt.close();
-            return(value);
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return value;
-    }
-
-    @Override
     public boolean addBusinessRule(MultiValueMap<String, String> body, List<Integer> Rulesids) throws JSONException {
+        //make values for every ruleid
         for(int ruleid : Rulesids) {
             if (ruleid != 0) {
                 addBusinessRuleSub(body, ruleid);
@@ -54,44 +34,43 @@ public class OracleValueStorage implements ValueStorage {
         //every ruleType has it's own way of Storing
         String ruleType = removeBrackString(json.getString("rule"));
 
-        //storing value Attribute compare Rule
-        if (ruleType.equals("ACMP")) {
-            StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
-        }
+        switch (ruleType) {
+            //storing value Attribute compare Rule
+            case "ACMP":
+                StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
+                break;
 
-        //storing value List Compare Rule
-        if (ruleType.equals("ALIS")) {
-            String[] values = json.getString("value1").split(", ");
-            System.out.println(values);
-            int sortOrder = 1;
-            for(String value : values) {
-                StoreBusinessRule(value, 0, sortOrder, Ruleid);
-                sortOrder++;
-            }
-        }
+            //storing value List Compare Rule
+            case "ALIS":
+                String[] values = json.getString("value1").split(", ");
+                System.out.println(values);
+                int sortOrder = 1;
+                for (String value : values) {
+                    StoreBusinessRule(value, 0, sortOrder, Ruleid);
+                    sortOrder++;
+                }
+                break;
 
-        //storing value Attribute Range Rule
-        else if (ruleType.equals("ARNG")) {
-            StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
-            StoreBusinessRule(removeBrackString(json.getString("value2")), 0, 2, Ruleid);
-        }
+            //storing value Attribute Range Rule
+            case "ARNG":
+                StoreBusinessRule(removeBrackString(json.getString("value1")), 0, 1, Ruleid);
+                StoreBusinessRule(removeBrackString(json.getString("value2")), 0, 2, Ruleid);
+                break;
 
-        //storing value Tuple Compare Rule
-        else if (ruleType.equals("TCMP")) {
-            StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column1")), 1, 1, Ruleid);
-            StoreBusinessRule(removeBrackString(json.getString("current_table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
-        }
+            //storing value Tuple Compare Rule
+            case "TCMP":
+                StoreBusinessRule(removeBrackString(json.getString("current_table")) + "." + removeBrackString(json.getString("column1")), 1, 1, Ruleid);
+                StoreBusinessRule(removeBrackString(json.getString("current_table")) + "." + removeBrackString(json.getString("column2")), 1, 2, Ruleid);
+                break;
 
-        // inter-entity Tuple compare Rule
-        else if (ruleType.equals("ICMP")) {
-            StoreBusinessRule(removeBrackString(json.getString("table"))+"."+ removeBrackString(json.getString("column2")), 1, 2, Ruleid);
+            // inter-entity Tuple compare Rule
+            case "ICMP":
+                StoreBusinessRule(removeBrackString(json.getString("table")) + "." + removeBrackString(json.getString("column2")), 1, 2, Ruleid);
+                break;
         }
         return true;
     }
 
-    private String removeBrackString(String Stringnm){
-        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
-    }
 
     private boolean StoreBusinessRule(String value, int isColumn, int sort_order, int ruleID) {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
@@ -114,56 +93,87 @@ public class OracleValueStorage implements ValueStorage {
     }
 
     @Override
-    public boolean Delete(int valueId){
+    public Map<String, String> getBusinessRuleById(int businessRuleId) {
+        Map<String, String> BusinessRuleInf = new HashMap<>();
+        //get Values information
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "DELETE FROM \"VALUES\" WHERE ID=?";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, valueId);
-            pstmt.executeQuery();
-            pstmt.close();
-            return true;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-            return false;
-
-    }
-
-    @Override
-    public Value Update(Value value, int valueId){
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "UPDATE \"VALUES\" SET VALUE = ?, IS_COLUMN = ?, SORT_ORDER = ?, RULE_ID = ? WHERE ID = ?";
+            String query = "SELECT * from \"VALUES\" V JOIN RULES R on R.ID = V.RULE_ID where BUSINESS_RULES_ID = " + businessRuleId + " order by R.SORT_ORDER";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, value.getValue());
-            pstmt.setInt(2, value.getIsColumn());
-            pstmt.setInt(3, value.getSortOrder());
-            pstmt.setInt(4, value.getRuleId());
-            pstmt.setInt(5, valueId);
-
-            pstmt.executeQuery();
-            pstmt.close();
-            return value;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return value;
-    }
-
-    @Override
-    public List<Value> getAll() {
-        List<Value> Values = new ArrayList<>();
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query =  "SELECT * from \"VALUES\"";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            ResultSet dbResultSet = pstmt.executeQuery();
-
-
-            while (dbResultSet.next()) {
-                int id = dbResultSet.getInt("id");
-                String value = dbResultSet.getString("value");
-                int isColumn = dbResultSet.getInt("is_column");
-                int sortOrder = dbResultSet.getInt("sort_order");
-                int ruleId = dbResultSet.getInt("rule_id");
-                Values.add(new Value(id, value, isColumn, sortOrder, ruleId));
+            ResultSet dbResultSetVLS = pstmt.executeQuery();
+            String eventType = "";
+            while (dbResultSetVLS.next()) {
+                eventType = dbResultSetVLS.getString("EVENT_TYPE");
             }
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return Values;
+            BusinessRuleInf.put("eventType", eventType);
+
+            switch (eventType) {
+                //getting value Attribute compare Rule
+                case "ACMP":
+                    while (dbResultSetVLS.next()) {
+                        BusinessRuleInf.put("value1", dbResultSetVLS.getString("VALUE"));
+                    }
+                    break;
+
+                //getting value List Compare Rule
+                case "ALIS":
+                    String values = "";
+                    while (dbResultSetVLS.next()) {
+                        String value = dbResultSetVLS.getString("VALUE") + ", ";
+                        values += value;
+                    }
+                    BusinessRuleInf.put("value1", values.substring(0, values.length() - 2));
+                    break;
+
+                //storing value Attribute Range Rule
+                case "ARNG": {
+                    int counter = 0;
+                    while (dbResultSetVLS.next()) {
+                        if (counter == 0) {
+                            BusinessRuleInf.put("value1", dbResultSetVLS.getString("VALUE"));
+                            counter++;
+                        } else {
+                            BusinessRuleInf.put("value2", dbResultSetVLS.getString("VALUE"));
+                        }
+                    }
+                    break;
+                }
+
+                //getting value Tuple Compare Rule
+                case "TCMP": {
+                    int counter = 0;
+                    while (dbResultSetVLS.next()) {
+                        String value = dbResultSetVLS.getString("VALUE");
+                        String[] values1 = value.split(".");
+                        if (counter == 0) {
+                            BusinessRuleInf.put("column1", values1[1]);
+                            counter++;
+                        } else {
+                            BusinessRuleInf.put("column2", values1[1]);
+                        }
+                    }
+                    break;
+                }
+
+                //getting inter-entity Tuple compare Rule
+                case "ICMP":
+                    while (dbResultSetVLS.next()) {
+                        String value = dbResultSetVLS.getString("VALUE");
+                        String[] values2 = value.split(".");
+                        BusinessRuleInf.put("table", values2[0]);
+                        BusinessRuleInf.put("column2", values2[1]);
+                    }
+                    break;
+            }
+            return BusinessRuleInf;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return null;
+    }
+
+    //for cleaning up incomming data
+    private String removeBrackString(String Stringnm){
+        return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
     }
 }

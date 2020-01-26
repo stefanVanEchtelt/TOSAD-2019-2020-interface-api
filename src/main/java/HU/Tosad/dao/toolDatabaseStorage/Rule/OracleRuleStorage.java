@@ -1,48 +1,30 @@
 package HU.Tosad.dao.toolDatabaseStorage.Rule;
 
-import HU.Tosad.businessRule.Rule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("OracleRuleStorage")
 public class OracleRuleStorage implements RuleStorage {
 
     @Override
-    public Rule Save(Rule rule){
-        //Database adds ID
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "INSERT INTO RULES (TYPE_EID, SORT_ORDER, BUSINESS_RULES_ID) VALUES (?, ?, ?)";
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-            pstmt.setString(1, rule.getType());
-            pstmt.setInt(2, rule.getSortOrder());
-            pstmt.setInt(3, rule.getBusinessRuleId());
-            pstmt.executeQuery();
-
-            pstmt.close();
-            return(rule);
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return rule;
-    }
-
-    @Override
     public List<Integer> addBusinessRule(MultiValueMap<String, String> body, int businessRuleId) throws JSONException {
 
-        //make body easy to read
         JSONObject json = new JSONObject(body);
         int[] TypesEid = getTypeEid(json);
         String eventType = removeBrackString(json.getString("rule"));
         List<Integer> rulesIds = new ArrayList<Integer>();
+        //keeping track of sortorder + creating Rule
         int sortOrder = 1;
         for(int typeEid : TypesEid){
             if(typeEid !=0) {
@@ -80,7 +62,7 @@ public class OracleRuleStorage implements RuleStorage {
         return 0;
     }
 
-
+//clean incomming data
     private String removeBrackString(String Stringnm){
         return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
     }
@@ -142,55 +124,46 @@ public class OracleRuleStorage implements RuleStorage {
         return new int[] {TypeEid, TypeEid2, TypeEid3};
     }
 
-
     @Override
-    public boolean Delete(int ruleId){
+    public Map<String, String> getBusinessRuleById(int businessRuleId) {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "DELETE FROM RULES WHERE ID=?";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, ruleId);
-            pstmt.executeQuery();
-            pstmt.close();
-            return true;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return false;
+            Map<String, String> BusinessRuleInf = new HashMap<>();
 
-    }
-
-    @Override
-    public Rule Update(Rule rule, int ruleId){
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "UPDATE RULES SET TYPE_EID = ?, SORT_ORDER = ?, BUSINESS_RULES_ID = ? WHERE ID = ?";
+            String query = "SELECT * from RULES R where BUSINESS_RULES_ID = " + businessRuleId + " order by r.sort_order";
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, rule.getType());
-            pstmt.setInt(2, rule.getSortOrder());
-            pstmt.setInt(3, rule.getBusinessRuleId());
-            pstmt.setInt(4, ruleId);
-
-            pstmt.executeQuery();
-            pstmt.close();
-            return rule;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return rule;
-    }
-
-    @Override
-    public List<Rule> getAll() {
-        List<Rule> Rules = new ArrayList<>();
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query =  "SELECT * from RULES";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            ResultSet dbResultSet = pstmt.executeQuery();
-
-            while (dbResultSet.next()) {
-                int id = dbResultSet.getInt("id");
-                String typeEID = dbResultSet.getString("type_eid");
-                int sortOrder = dbResultSet.getInt("sort_order");
-                int businessRulesId = dbResultSet.getInt("business_rules_id");
-                Rules.add(new Rule(id, typeEID, sortOrder, businessRulesId));
+            ResultSet dbResultSetRL = pstmt.executeQuery();
+            StringBuilder operator = new StringBuilder();
+            while (dbResultSetRL.next()) {
+                String nmr = dbResultSetRL.getString("TYPE_EID");
+                if (nmr.equals("2")) {
+                    operator.append("!");
+                }
+                if (nmr.equals("4")) {
+                    operator.append("<");
+                }
+                if (nmr.equals("6")) {
+                    operator.append(">");
+                }
+                if (nmr.equals("3")) {
+                    operator.append("=");
+                }
+                if (nmr.equals("9")) {
+                    operator.append("LIKE");
+                }
+                if (nmr.equals("8")) {
+                    operator.append("BETWEEN");
+                }
+                if (nmr.equals("5")) {
+                    operator.append("IN");
+                }
             }
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return Rules;
+            BusinessRuleInf.put("operator", operator.toString());
+            return BusinessRuleInf;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+
+        }
+        return null;
     }
 }

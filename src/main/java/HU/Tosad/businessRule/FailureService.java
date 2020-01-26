@@ -17,6 +17,10 @@ public class FailureService {
     @Autowired
     public FailureService(@Qualifier("OracleFailureStorage") FailureStorage failureStorage) { this.failureStorage = failureStorage;}
 
+    public static Map<String, String> getBusinessRulesById(int id) {
+        return failureStorage.getFailureById(id);
+    }
+
     public List<Failure> getAll() throws SQLException {
         return failureStorage.getAll();
     }

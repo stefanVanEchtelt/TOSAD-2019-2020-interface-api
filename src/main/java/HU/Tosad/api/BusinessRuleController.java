@@ -42,7 +42,15 @@ public class BusinessRuleController {
 
     @GetMapping(path="/businessRules/id/{id}")
     public String getBusinessRulesById(@PathVariable("id") int id) throws SQLException {
-        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesById(id));
+        Map<String, String> BusinessRuleInf = new HashMap<>();
+        BusinessRuleInf.putAll(BusinessRuleService.getBusinessRulesById(id));
+        BusinessRuleInf.putAll(FailureService.getBusinessRulesById(id));
+        BusinessRuleInf.putAll(EventTriggerTypeService.getBusinessRuleById(id));
+        BusinessRuleInf.putAll(RuleService.getBusinessRuleById(id));
+        BusinessRuleInf.putAll(ValueService.getBusinessRuleById(id));
+
+
+        String json = new Gson().toJson(BusinessRuleInf);
         return json;
     }
 

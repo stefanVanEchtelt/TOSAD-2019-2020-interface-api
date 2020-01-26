@@ -1,6 +1,5 @@
 package HU.Tosad.dao.toolDatabaseStorage.Failure;
 
-import HU.Tosad.businessRule.Failure;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,40 +10,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @Repository("OracleFailureStorage")
 public class OracleFailureStorage implements FailureStorage {
 
     @Override
-    public Failure Save(Failure failure){
-        //Database adds ID
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "INSERT INTO FAILURES (MESSAGE, CODE, NAME, BUSINESS_RULES_ID) VALUES (?, ?, ?, ?)";
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-            pstmt.setString(1, failure.getMessage());
-            pstmt.setInt(2, failure.getCode());
-            pstmt.setString(3, failure.getName());
-            pstmt.setInt(4, failure.getBusinessRuleId());
-            pstmt.executeQuery();
-
-            pstmt.close();
-            return(failure);
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return failure;
-    }
-
-    @Override
     public boolean addBusinessRule(MultiValueMap<String, String> body, int businessRuleId){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
-            //make body easy to read
             JSONObject json = new JSONObject(body);
-
-            //Database adds FailureID
             String query = "INSERT INTO FAILURES (MESSAGE, CODE, BUSINESS_RULES_ID, NAME) VALUES (?, ?, ?, ?)";
             PreparedStatement pstmt = con.prepareStatement(query);
 
@@ -60,66 +36,35 @@ public class OracleFailureStorage implements FailureStorage {
         return false;
     }
 
+    @Override
+    public Map<String, String> getFailureById(int businessRuleId){
+        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
+            Map<String, String> BusinessRuleInf = new HashMap<>();
+
+            String query = "SELECT * from FAILURES where BUSINESS_RULES_ID = " + businessRuleId;
+            PreparedStatement pstmt = con.prepareStatement(query);
+
+            ResultSet dbResultSetFLR = pstmt.executeQuery();
+            while (dbResultSetFLR.next()) {
+                BusinessRuleInf.put("message", dbResultSetFLR.getString("MESSAGE"));
+                BusinessRuleInf.put("code", dbResultSetFLR.getString("CODE"));
+            }
+            return BusinessRuleInf;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return null;
+    }
+
+    //cleaning dirty incomming data
     private int removeBrackInt(String Stringnm){
         String remBrackString = Stringnm.replaceAll("(\"|\\[|\\]|\")","");
         int num = Integer.parseInt(remBrackString);
         return num;
     }
 
+    //cleaning dirty incomming data
     private String removeBrackString(String Stringnm){
         return Stringnm.replaceAll("(\"|\\[|\\]|\")","");
-    }
-
-    @Override
-    public boolean Delete(int FailureId){
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "DELETE FROM FAILURES WHERE ID=?";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, FailureId);
-            pstmt.executeQuery();
-            pstmt.close();
-            return true;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return false;
-
-    }
-
-    @Override
-    public Failure Update(Failure failure, int failureId){
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "UPDATE FAILURES SET MESSAGE = ?, CODE = ?, NAME = ?, BUSINESS_RULES_ID = ? WHERE ID = ?";
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-            pstmt.setString(1, failure.getMessage());
-            pstmt.setInt(2, failure.getCode());
-            pstmt.setString(3, failure.getName());
-            pstmt.setInt(4, failure.getBusinessRuleId());
-            pstmt.setInt(5, failureId);
-
-            pstmt.executeQuery();
-            pstmt.close();
-            return failure;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return failure;
-    }
-
-    @Override
-    public List<Failure> getAll() {
-        List<Failure> Failures = new ArrayList<>();
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query =  "SELECT * from FAILURES";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            ResultSet dbResultSet = pstmt.executeQuery();
-
-            while (dbResultSet.next()) {
-                int id = dbResultSet.getInt("id");
-                String message = dbResultSet.getString("message");
-                int code = dbResultSet.getInt("code");
-                String name = dbResultSet.getString("name");
-                int businessRulesId = dbResultSet.getInt("business_rules_id");
-                Failures.add(new Failure(id, message, code, name, businessRulesId));
-            }
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return Failures;
     }
 }

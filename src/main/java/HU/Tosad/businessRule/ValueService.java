@@ -25,6 +25,9 @@ public class ValueService {
     public static boolean addBusinessRule(MultiValueMap<String, String> body, List<Integer> rulesids) throws SQLException, JSONException {
         return valueStorage.addBusinessRule(body, rulesids);
     }
+    public static Map<String, String> getBusinessRuleById(int businessRuleId){
+        return valueStorage.getBusinessRuleById(businessRuleId);
+    }
 
     public Value Save(Value value) throws SQLException{
         return valueStorage.Save(value);

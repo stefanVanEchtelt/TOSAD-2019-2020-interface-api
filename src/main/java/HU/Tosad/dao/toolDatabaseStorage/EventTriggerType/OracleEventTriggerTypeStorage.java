@@ -1,6 +1,5 @@
 package HU.Tosad.dao.toolDatabaseStorage.EventTriggerType;
 
-import HU.Tosad.businessRule.EventTriggerType;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,29 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("OracleEventTriggerTypeStorage")
 public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
-
-    @Override
-    public EventTriggerType Save(EventTriggerType eventTriggerType){
-        //Database adds ID
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "INSERT INTO EVENT_TRIGGER_TYPES (NAME) VALUES (?)";
-            PreparedStatement pstmt = con.prepareStatement(query);
-
-            pstmt.setString(1, eventTriggerType.getName());
-            pstmt.executeQuery();
-
-            pstmt.close();
-            return(eventTriggerType);
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return eventTriggerType;
-    }
 
     @Override
     public List<Integer> addBusinessRule(MultiValueMap<String, String> body) throws JSONException {
@@ -61,20 +41,19 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
 
         if(ettInsert.contains("INSERT")){
             ettIds.add(addBusinessRuleSub("INSERT"));
-        }else{}
+        }
         if(ettUpdate.contains("UPDATE")){
             ettIds.add(addBusinessRuleSub("UPDATE"));
-        }else{}
+        }
         if(ettDelete.contains("DELETE")){
             ettIds.add(addBusinessRuleSub("DELETE"));
-        }else{}
+        }
         return ettIds;
     }
 
     private int addBusinessRuleSub(String eventType){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
 
-            //Database adds EttID
             String query = "INSERT INTO EVENT_TRIGGER_TYPES (NAME) VALUES (?)";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, eventType);
@@ -96,49 +75,31 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
     }
 
     @Override
-    public boolean Delete(int eventTriggerTypeId){
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "DELETE FROM EVENT_TRIGGER_TYPES WHERE ID=?";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            pstmt.setInt(1, eventTriggerTypeId);
-            pstmt.executeQuery();
-            pstmt.close();
-            return true;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return false;
+    public Map<String, String> getBusinessRuleById(int businessRuleId) {
+        Map<String, String> BusinessRuleInf = new HashMap<>();
 
-    }
-
-    @Override
-    public EventTriggerType Update(EventTriggerType eventTriggerType, int eventTriggerTypeId){
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query = "UPDATE EVENT_TRIGGER_TYPES SET NAME = ? WHERE ID = ?";
+            //joins so you get all the event types from one businessRule
+            String query = "SELECT * from EVENT_TRIGGER_TYPES EVT JOIN BUSINESS_RULE_TRIGGER_EVENTS BRTE on " +
+                    "EVT.ID = BRTE.EVENT_TRIGGER_TYPE_ID JOIN BUSINESS_RULES BR on BRTE.BUSINESS_RULES_ID = BR.ID " +
+                    "where BUSINESS_RULES_ID = " + businessRuleId;
             PreparedStatement pstmt = con.prepareStatement(query);
 
-            pstmt.setString(1, eventTriggerType.getName());
-            pstmt.setInt(2, eventTriggerTypeId);
-
-            pstmt.executeQuery();
-            pstmt.close();
-            return eventTriggerType;
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return eventTriggerType;
-    }
-
-    @Override
-    public List<EventTriggerType> getAll() {
-        List<EventTriggerType> EventTriggerTypes = new ArrayList<>();
-        try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
-            String query =  "SELECT * from EVENT_TRIGGER_TYPES";
-            PreparedStatement pstmt = con.prepareStatement(query);
-            ResultSet dbResultSet = pstmt.executeQuery();
-
-            while (dbResultSet.next()) {
-                int id = dbResultSet.getInt("id");
-                String name = dbResultSet.getString("name");
-                EventTriggerTypes.add(new EventTriggerType(id, name));
+            ResultSet dbResultSetEVT = pstmt.executeQuery();
+            while (dbResultSetEVT.next()) {
+                String evt = dbResultSetEVT.getString("NAME");
+                if (evt.equals("INSERT")) {
+                    BusinessRuleInf.put("event_types_INSERT", "INSERT");
+                } else if (evt.equals("UPDATE")) {
+                    BusinessRuleInf.put("event_types_UPDATE", "UPDATE");
+                } else if (evt.equals("DELETE")) {
+                    BusinessRuleInf.put("event_types_DELETE", "DELETE");
+                }
             }
-        } catch (SQLException sqle) { sqle.printStackTrace(); }
-        return EventTriggerTypes;
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+        return BusinessRuleInf;
     }
+
 }

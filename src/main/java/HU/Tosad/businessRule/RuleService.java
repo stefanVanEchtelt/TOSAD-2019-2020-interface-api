@@ -10,6 +10,7 @@ import businessRuleBuilder.BusinessRuleGenerator;
 import businessRuleBuilder.OracleBusinessRuleGenerator;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -37,6 +38,9 @@ public class RuleService {
 
     public boolean Delete(int ruleId) throws SQLException {
         return ruleStorage.Delete(ruleId);
+    }
+    public static Map<String, String> getBusinessRuleById(int businessRuleId) {
+        return ruleStorage.getBusinessRuleById(businessRuleId);
     }
 
     public String Example(int ruleId) {
