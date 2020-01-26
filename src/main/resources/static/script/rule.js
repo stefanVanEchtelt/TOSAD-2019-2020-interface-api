@@ -106,6 +106,7 @@ function sendRule(){
     .then((response) => { 
         if (response.ok) {
             console.log(response.json());
+            console.log("testtt")
             window.location.replace("table.html");
         } 
         else {
