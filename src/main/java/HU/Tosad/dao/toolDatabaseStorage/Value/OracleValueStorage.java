@@ -42,8 +42,7 @@ public class OracleValueStorage implements ValueStorage {
 
             //storing value List Compare Rule
             case "ALIS":
-                String[] values = json.getString("value1").split(", ");
-                System.out.println(values);
+                String[] values = json.getString("form_list").split(", ");
                 int sortOrder = 1;
                 for (String value : values) {
                     StoreBusinessRule(value, 0, sortOrder, Ruleid);
@@ -105,13 +104,23 @@ public class OracleValueStorage implements ValueStorage {
             while (dbResultSetVLS.next()) {
                 eventType = dbResultSetVLS.getString("EVENT_TYPE");
             }
-            BusinessRuleInf.put("eventType", eventType);
+            BusinessRuleInf.put("rule", eventType);
+
+            String form_list = "";
+            String value1 = "";
+            String value2 = "";
+            String column1 = "";
+            String column2 = "";
+            String table = "";
+            String current_table = "";
+            String current_column = "";
+
 
             switch (eventType) {
                 //getting value Attribute compare Rule
                 case "ACMP":
                     while (dbResultSetVLS.next()) {
-                        BusinessRuleInf.put("value1", dbResultSetVLS.getString("VALUE"));
+                        value1 = dbResultSetVLS.getString("VALUE");
                     }
                     break;
 
@@ -122,7 +131,7 @@ public class OracleValueStorage implements ValueStorage {
                         String value = dbResultSetVLS.getString("VALUE") + ", ";
                         values += value;
                     }
-                    BusinessRuleInf.put("value1", values.substring(0, values.length() - 2));
+                    form_list = values.substring(0, values.length() - 2);
                     break;
 
                 //storing value Attribute Range Rule
@@ -130,10 +139,10 @@ public class OracleValueStorage implements ValueStorage {
                     int counter = 0;
                     while (dbResultSetVLS.next()) {
                         if (counter == 0) {
-                            BusinessRuleInf.put("value1", dbResultSetVLS.getString("VALUE"));
+                            value1 = dbResultSetVLS.getString("VALUE");
                             counter++;
                         } else {
-                            BusinessRuleInf.put("value2", dbResultSetVLS.getString("VALUE"));
+                            value2 = dbResultSetVLS.getString("VALUE");
                         }
                     }
                     break;
@@ -146,10 +155,10 @@ public class OracleValueStorage implements ValueStorage {
                         String value = dbResultSetVLS.getString("VALUE");
                         String[] values1 = value.split(".");
                         if (counter == 0) {
-                            BusinessRuleInf.put("column1", values1[1]);
+                            column1 = values1[0];
                             counter++;
                         } else {
-                            BusinessRuleInf.put("column2", values1[1]);
+                            column2 = values1[1];
                         }
                     }
                     break;
@@ -160,11 +169,22 @@ public class OracleValueStorage implements ValueStorage {
                     while (dbResultSetVLS.next()) {
                         String value = dbResultSetVLS.getString("VALUE");
                         String[] values2 = value.split(".");
-                        BusinessRuleInf.put("table", values2[0]);
-                        BusinessRuleInf.put("column2", values2[1]);
+                        table = values2[0];
+                        column2 = values2[1];
                     }
                     break;
             }
+
+            //save the values
+            BusinessRuleInf.put("form_list", form_list);
+            BusinessRuleInf.put("value1", value1);
+            BusinessRuleInf.put("value2", value2);
+            BusinessRuleInf.put("column1", column1);
+            BusinessRuleInf.put("column2", column2);
+            BusinessRuleInf.put("table", table);
+            BusinessRuleInf.put("current_table", current_table);
+            BusinessRuleInf.put("current_column", current_column);
+
             return BusinessRuleInf;
         } catch (SQLException sqle) {
             sqle.printStackTrace();

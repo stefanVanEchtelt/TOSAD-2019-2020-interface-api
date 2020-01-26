@@ -96,7 +96,6 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
 
     @Override
     public List<BusinessRule> getBusinessRulesByTable(String name) {
-        System.out.println(name);
         return getBusinessRulesBy("ON_TABLE", name);
     }
 
@@ -104,7 +103,6 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
     public BusinessRule getBusinessRulesByName(String name) {
         List<BusinessRule> businessRules = getBusinessRulesBy("NAME", name);
         BusinessRule businessRule = businessRules.get(0);
-        System.out.println(businessRule.getName());
         return businessRule;
     }
 
@@ -113,10 +111,7 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
             String query =  "SELECT * from BUSINESS_RULES where " + onWhat + " = " + "'" + onWhatName +"'";
             PreparedStatement pstmt = con.prepareStatement(query);
-            System.out.println(query);
-
             ResultSet dbResultSet = pstmt.executeQuery();
-            System.out.println(con);
 
             while (dbResultSet.next()) {
                 int id = dbResultSet.getInt("id");

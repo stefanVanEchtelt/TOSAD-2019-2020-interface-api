@@ -77,6 +77,9 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
     @Override
     public Map<String, String> getBusinessRuleById(int businessRuleId) {
         Map<String, String> BusinessRuleInf = new HashMap<>();
+        Boolean insert = false;
+        Boolean update = false;
+        Boolean delete = false;
 
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
             //joins so you get all the event types from one businessRule
@@ -88,12 +91,26 @@ public class OracleEventTriggerTypeStorage implements EventTriggerTypeStorage {
             ResultSet dbResultSetEVT = pstmt.executeQuery();
             while (dbResultSetEVT.next()) {
                 String evt = dbResultSetEVT.getString("NAME");
+
                 if (evt.equals("INSERT")) {
                     BusinessRuleInf.put("event_types_INSERT", "INSERT");
-                } else if (evt.equals("UPDATE")) {
+                    insert = true;
+                } else if(!insert){
+                    BusinessRuleInf.put("event_types_INSERT", "");
+                }
+
+                if (evt.equals("UPDATE")) {
                     BusinessRuleInf.put("event_types_UPDATE", "UPDATE");
-                } else if (evt.equals("DELETE")) {
+                    update = true;
+                } else if(!update) {
+                    BusinessRuleInf.put("event_types_UPDATE", "");
+                }
+
+                if (evt.equals("DELETE")) {
                     BusinessRuleInf.put("event_types_DELETE", "DELETE");
+                    update = true;
+                } else if(!delete) {
+                    BusinessRuleInf.put("event_types_DELETE", "");
                 }
             }
         } catch (SQLException sqle) {

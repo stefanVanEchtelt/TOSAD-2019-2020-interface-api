@@ -108,14 +108,14 @@ public class OracleRuleStorage implements RuleStorage {
                 case "BETWEEN":
                     TypeEid = 8;
                     break;
-                case "NOT BETWEEN":
+                case "!BETWEEN":
                     TypeEid = 2;
                     TypeEid2 = 8;
                     break;
                 case "IN":
                     TypeEid = 5;
                     break;
-                case "NOT IN":
+                case "!IN":
                     TypeEid = 2;
                     TypeEid2 = 5;
                     break;
@@ -134,6 +134,7 @@ public class OracleRuleStorage implements RuleStorage {
 
             ResultSet dbResultSetRL = pstmt.executeQuery();
             StringBuilder operator = new StringBuilder();
+            String onType = "";
             while (dbResultSetRL.next()) {
                 String nmr = dbResultSetRL.getString("TYPE_EID");
                 if (nmr.equals("2")) {
@@ -141,24 +142,37 @@ public class OracleRuleStorage implements RuleStorage {
                 }
                 if (nmr.equals("4")) {
                     operator.append("<");
+                    onType = "rel";
                 }
                 if (nmr.equals("6")) {
                     operator.append(">");
+                    onType = "rel";
                 }
                 if (nmr.equals("3")) {
                     operator.append("=");
+                    onType = "rel";
                 }
                 if (nmr.equals("9")) {
                     operator.append("LIKE");
+                    onType = "comp";
                 }
                 if (nmr.equals("8")) {
                     operator.append("BETWEEN");
+                    onType = "comp";
                 }
                 if (nmr.equals("5")) {
                     operator.append("IN");
+                    onType = "comp";
                 }
             }
-            BusinessRuleInf.put("operator", operator.toString());
+            if(onType.equals("comp")) {
+                BusinessRuleInf.put("comparison_operator", operator.toString());
+                BusinessRuleInf.put("relational_operator", "");
+            }
+            else{
+                BusinessRuleInf.put("relational_operator", operator.toString());
+                BusinessRuleInf.put("comparison_operator", "");
+            }
             return BusinessRuleInf;
         } catch (SQLException sqle) {
             sqle.printStackTrace();
