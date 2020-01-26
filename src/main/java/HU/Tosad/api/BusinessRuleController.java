@@ -49,7 +49,6 @@ public class BusinessRuleController {
         BusinessRuleInf.putAll(RuleService.getBusinessRuleById(id));
         BusinessRuleInf.putAll(ValueService.getBusinessRuleById(id));
 
-
         String json = new Gson().toJson(BusinessRuleInf);
         return json;
     }
@@ -58,5 +57,23 @@ public class BusinessRuleController {
     public Boolean delete(@PathVariable int businessRuleId) throws SQLException {
         BusinessRuleService.Delete(businessRuleId);
         return true;
+    }
+
+    @GetMapping(path="/businessRules/column/{name}")
+    public String getBusinessRulesByColumn(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByColumn(name));
+        return json;
+    }
+
+    @GetMapping(path="/businessRules/table/{name}")
+    public String getBusinessRulesByTable(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByTable(name));
+        return json;
+    }
+
+    @GetMapping(path="/businessRules/naam/{name}")
+    public String getBusinessRulesByName(@PathVariable("name") String name) {
+        String json = new Gson().toJson(BusinessRuleService.getBusinessRulesByName(name));
+        return json;
     }
 }

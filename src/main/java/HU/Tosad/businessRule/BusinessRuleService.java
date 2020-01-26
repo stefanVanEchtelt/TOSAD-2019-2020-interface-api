@@ -26,8 +26,19 @@ public class BusinessRuleService {
         return businessRuleStorage.getBusinessRulesById(BusinessRuleId);
     }
 
-
     public boolean Delete(int businessRuleId) throws SQLException {
         return businessRuleStorage.Delete(businessRuleId);
+    }
+
+    public List<BusinessRule> getBusinessRulesByColumn(String columnName) {
+        return businessRuleStorage.getBusinessRulesByColumn(columnName);
+    }
+
+    public List<BusinessRule> getBusinessRulesByTable(String tableName) {
+        return businessRuleStorage.getBusinessRulesByTable(tableName);
+    }
+
+    public BusinessRule getBusinessRulesByName(String BusinessRule) {
+        return businessRuleStorage.getBusinessRulesByName(BusinessRule);
     }
 }
