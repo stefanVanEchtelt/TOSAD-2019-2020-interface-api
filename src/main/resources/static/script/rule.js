@@ -73,8 +73,8 @@ rule.change(function(){
             $("#form_group_value_extra").show();
             $("#form_group_operator_arng").show();
 
-            $("#form_value").prop('required',true);
-            $("#form_value_extra").prop('required',true);
+            $("#value1").prop('required',true);
+            $("#value2").prop('required',true);
             $("#comparison_operator").prop('required',true);            
             break;
         case "ACMP":
@@ -84,6 +84,7 @@ rule.change(function(){
             break;
         case "ALIS":
             $("#form_group_list").show();
+            $("#list").prop('required',true);            
             break;
         case "TCMP":
             $("#form_group_column").show();
@@ -109,46 +110,47 @@ function initForm(){
     $("#form_group_value_extra").hide();    
     $("#form_group_list").hide();
 
-    $("#form_value").prop('required',false);
-    $("#form_value_extra").prop('required',false);
-    $("#comparison_operator").prop('required',false); 
+    $("#value1").removeAttr('required');
+    $("#value2").removeAttr('required');
+    $("#comparison_operator").removeAttr('required'); 
+    $("#list").removeAttr('required');            
+
 }
 
 function sendRule(){
+    if(validateForm() == false){
+        openModal("Fill in the red boxes", "close");
+        return;
+    }
+
     let formData = new FormData(document.querySelector("#generate_rule"));
     let encData = new URLSearchParams(formData.entries());
     var url = "";
     if(urlParams.get('rule') != null){
-        // fetch("http://localhost:8080/api/tosad/businessRule/businessRule" + urlParams.get('rule'),  {method: 'DELETE', body: encData})
-        // .then((response) => {
-        //     if (response.ok) {
-        //         console.log(response.json());
-        //     }
-        //     else {
-        //         console.log(response.json());
-        //         alert(response.json());
-        //     }
-        // })
-        // .then((myJson) => {
-        // });
+        fetch("http://localhost:8080/api/tosad/businessRule/businessRule" + urlParams.get('rule'),  {method: 'DELETE', body: encData})
+        .then((response) => {
+            if (response.ok) {
+            }
+            else {
+            }
+        })
+        .then((myJson) => {
+        });
     }
-    // fetch("http://localhost:8080/api/tosad/businessRule/businessRule", {method: 'POST', body: encData})
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             console.log(response.json());
-    //             window.location.replace("table.html");
-    //         }
-    //         else {
-    //             console.log(response.json());
-    //             alert(response.json());
-    //         }
-    //     })
-    //     .then((myJson) => {
-    //     });
+    fetch("http://localhost:8080/api/tosad/businessRule/businessRule", {method: 'POST', body: encData})
+        .then((response) => {
+            if (response.ok) {
+                openModal("Business Rule added", "column.html?table=" + urlParams.get('table'));
+            }
+            else {
+                openModal("Error, Business Rule not added", "close");
+            }
+        })
+        .then((myJson) => {
+        });
 }
 
 function fillForm(id){
-    console.log("filling...");
     fetch("http://localhost:8080/api/tosad/businessRule/businessRule/businessRules/id/" + id, {method: 'GET'})
         .then((response) => {
             if (response.ok) {
@@ -159,8 +161,9 @@ function fillForm(id){
             $("#trigger_insert").val();
             $("#trigger_update").val();
             $("#trigger_delete").val();
-            $("#form_value").val(rule.value1);
-            $("#form_value_extra").val(rule.value2);
+            $("#value1").val(rule.value1);
+            $("#value2").val(rule.value2);
+            $("#list").val(rule.form_list);
             $("#form_rule").val(rule.rule);
             $("#relational_operator").val(rule.relational_operator);
             $("#comparison_operator").val(rule.comparison_operator);
@@ -171,5 +174,18 @@ function fillForm(id){
             $("#error").val(rule.message);
             $("#error_code").val(rule.code);
         });
+}
+
+
+function validateForm(){
+    var filled = true;
+    $('#generate_rule').find(':input').each(function() {
+        var hasRequired = $(this).attr('required');
+        if ($(this).val() == "" && hasRequired !== false && typeof hasRequired !== "undefined") {
+            $(this).css('border-color', 'red');
+            filled = false;
+        }
+    });
+    return filled;
 }
 
