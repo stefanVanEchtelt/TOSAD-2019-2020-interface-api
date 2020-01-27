@@ -2,6 +2,8 @@ package HU.Tosad.dao.toolDatabaseStorage.BusinessRule;
 
 import HU.Tosad.businessRule.BusinessRule;
 import HU.Tosad.dao.toolDatabaseStorage.OracleToolDatabaseStorage;
+import businessRuleBuilder.BusinessRuleGenerator;
+import businessRuleBuilder.OracleBusinessRuleGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
@@ -52,7 +54,11 @@ public class OracleBusinessRuleStorage implements BusinessRuleStorage {
     }
 
     @Override
-    public boolean Delete(int businessRuleId) {
+    public boolean Delete(int businessRuleId){
+        //delete businessRule from targetDB
+        BusinessRuleGenerator businessRuleGenerator = new OracleBusinessRuleGenerator();
+        businessRuleGenerator.delete(businessRuleId);
+        //delete businessRule from toolDB
         try (Connection con = OracleToolDatabaseStorage.getInstance().getConnection()) {
             String query = "DELETE FROM BUSINESS_RULES WHERE ID=?";
             PreparedStatement pstmt = con.prepareStatement(query);

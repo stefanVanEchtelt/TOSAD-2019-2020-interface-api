@@ -1,21 +1,16 @@
 package HU.Tosad.api;
 
 import HU.Tosad.businessRule.*;
-import com.fasterxml.jackson.databind.util.JSONWrappedObject;
 import com.google.gson.Gson;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import javax.json.Json;
-import javax.ws.rs.FormParam;
+
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
