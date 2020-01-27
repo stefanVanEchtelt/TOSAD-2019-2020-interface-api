@@ -63,16 +63,14 @@ function getCardHtml(ruleName, ruleId, run) {
             btn += '<a ';
             btn += 'onclick="openModal(\'' + message + '\', \'' + redirect + '\') "';
             btn += 'id="' + ruleId + '" class=\"btn btn-info mr-3\" style=\"\">Executed</a>';
-            console.log(btn);
             html += btn;
 
         } else if (run === "noRun") {
             html += "<a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a>"
         }
         html +=
-        "               <a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
+        "               <a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "              </p>" +
-        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "            </div>\n" +
         "          </div>\n" +
         "        </div>\n" +
