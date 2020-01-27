@@ -1,6 +1,12 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
+initForm();
+
+if(urlParams.get('rule') != null){
+    fillForm(urlParams.get('rule'));
+}
+
 $(document).ready(function() {
     var tableName = urlParams.get('table');
     var columnName = urlParams.get('column');
@@ -55,8 +61,6 @@ function getColumnsByTable(table, column){
     });
 }
 
-initForm();
-
 var rule = $("#form_rule");
 $("#form_save").click(sendRule);
 
@@ -68,10 +72,15 @@ rule.change(function(){
             $("#form_group_value").show();
             $("#form_group_value_extra").show();
             $("#form_group_operator_arng").show();
+
+            $("#form_value").prop('required',true);
+            $("#form_value_extra").prop('required',true);
+            $("#comparison_operator").prop('required',true);            
             break;
         case "ACMP":
             $("#form_group_operator").show();
             $("#form_group_value").show();
+            $("#form_group_operator_acmp").show();
             break;
         case "ALIS":
             $("#form_group_list").show();
@@ -91,6 +100,7 @@ rule.change(function(){
 function initForm(){
     $("#form_group_operator").hide();
     $("#form_group_operator_arng").hide();
+    $("#form_group_operator_acmp").hide();
     $("#form_group_table").hide();
     $("#form_group_column").hide();
     $("#form_group_column2").hide();    
@@ -98,31 +108,68 @@ function initForm(){
     $("#form_group_value").hide();
     $("#form_group_value_extra").hide();    
     $("#form_group_list").hide();
+
+    $("#form_value").prop('required',false);
+    $("#form_value_extra").prop('required',false);
+    $("#comparison_operator").prop('required',false); 
 }
 
 function sendRule(){
     let formData = new FormData(document.querySelector("#generate_rule"));
     let encData = new URLSearchParams(formData.entries());
-
-    for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]);
-        console.log(pair[0]+ ', ' + pair[1]);
+    var url = "";
+    if(urlParams.get('rule') != null){
+        // fetch("http://localhost:8080/api/tosad/businessRule/businessRule" + urlParams.get('rule'),  {method: 'DELETE', body: encData})
+        // .then((response) => {
+        //     if (response.ok) {
+        //         console.log(response.json());
+        //     }
+        //     else {
+        //         console.log(response.json());
+        //         alert(response.json());
+        //     }
+        // })
+        // .then((myJson) => {
+        // });
     }
+    // fetch("http://localhost:8080/api/tosad/businessRule/businessRule", {method: 'POST', body: encData})
+    //     .then((response) => {
+    //         if (response.ok) {
+    //             console.log(response.json());
+    //             window.location.replace("table.html");
+    //         }
+    //         else {
+    //             console.log(response.json());
+    //             alert(response.json());
+    //         }
+    //     })
+    //     .then((myJson) => {
+    //     });
+}
 
-    fetch('http://localhost:8080/api/tosad/businessRule/businessRule', {method: 'POST', body: encData})
+function fillForm(id){
+    console.log("filling...");
+    fetch("http://localhost:8080/api/tosad/businessRule/businessRule/businessRules/id/" + id, {method: 'GET'})
         .then((response) => {
             if (response.ok) {
-                console.log(response.json());
-                window.location.replace("table.html");
+                return response.json();
             }
-            else {
-                console.log(response.json());
-                alert(response.json());
-            }
-        })
-        .then((myJson) => {
+        }).then((rule) => {
+            console.log(rule.rule);
+            $("#trigger_insert").val();
+            $("#trigger_update").val();
+            $("#trigger_delete").val();
+            $("#form_value").val(rule.value1);
+            $("#form_value_extra").val(rule.value2);
+            $("#form_rule").val(rule.rule);
+            $("#relational_operator").val(rule.relational_operator);
+            $("#comparison_operator").val(rule.comparison_operator);
+            $("#list_operator").val();
+            $("#column1").val(rule.column1);
+            $("#column2").val(rule.column2);            
+            $("#table").val(rule.table);
+            $("#error").val(rule.message);
+            $("#error_code").val(rule.code);
         });
-
-
 }
 

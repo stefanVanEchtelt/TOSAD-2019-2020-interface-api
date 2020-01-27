@@ -1,11 +1,10 @@
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+var column_name = urlParams.get('column');
+var table_name =  urlParams.get('table');
 getBusinessRules();
 
-
-
 function getBusinessRules() {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    let column_name = urlParams.get('column');
     fetch('http://localhost:8080/api/tosad/businessRule/businessRule/businessRules/column/'  + column_name,  {method: 'GET'})
         .then((response) => {
             if (response.ok) {
@@ -61,7 +60,7 @@ function getCardHtml(ruleName, ruleId) {
                             ruleName +
         "                   </pre>" +
         "              </p>" +
-        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
+        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "            </div>\n" +
         "          </div>\n" +
         "        </div>\n" +
@@ -83,6 +82,6 @@ function handleRun(ruleId){
         })
         .then((codeJson) => {
             console.log(codeJson);
-
+            
         })
 }
