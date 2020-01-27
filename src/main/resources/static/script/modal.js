@@ -7,6 +7,8 @@ function openModal(message, redirect){
     okBtn.onclick = function () {
         if (redirect === 'close') {
             messageDiv.style.display = "none";
+        } else if (redirect === 'reload') {
+            location.reload();
         } else {
             window.location = redirect;
         }
