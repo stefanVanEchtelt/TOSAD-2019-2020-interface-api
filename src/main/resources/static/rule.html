@@ -7,9 +7,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
   <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/modal.css">  
 </head>
 
 <body style="	background-image: url(https://pingendo.com/site-assets/cover.jpg);	background-position: top left;	background-size: 100%;	background-repeat: repeat;">
+  <div id="message">
+    <div id="message_info">
+    </div>
+    <button id="modal">OK</button>
+  </div>
   <div class="py-5">
     <div class="container">
       <div class="row">
@@ -26,21 +32,21 @@
           <form id="generate_rule">
           	<div class="form-group" id="form_rule_name"><label>Name</label><input type="text" class="form-control" placeholder="Name" name="rule_name" required>
             <div class="form-group" id="form_trigger"><label>Trigger</label><br>
-                <input class="form-check-input trigger-check" type="checkbox" value="INSERT" id="trigger_insert" name="event_types_insert" checked>
+                <input id="trigger_insert" class="form-check-input trigger-check" type="checkbox" value="INSERT" id="trigger_insert" name="event_types_insert" checked>
                   <label class="form-check-label" for="trigger_insert">
                     INSERT
                   </label><br>
-                <input class="form-check-input trigger-check" type="checkbox" value="UPDATE" id="trigger_update" name="event_types_update" checked>
+                <input id="trigger_update" class="form-check-input trigger-check" type="checkbox" value="UPDATE" id="trigger_update" name="event_types_update" checked>
                   <label class="form-check-label" for="trigger_update">
                     UPDATE
                   </label><br>               
-                <input class="form-check-input trigger-check" type="checkbox" value="DELETE" name="event_types_insert" id="trigger_delete">
+                <input id="trigger_delete" class="form-check-input trigger-check" type="checkbox" value="DELETE" name="event_types_insert" id="trigger_delete">
                   <label class="form-check-label" for="trigger_delete">
                     DELETE
                   </label>                
             </div>
             <div class="form-group"> <label>Rule</label><br>
-              <select id="form_rule" name="rule">
+              <select id="form_rule" name="rule" required>
                 <option value="-">-- Select a Rule --</option>
                 <option value="ARNG">Attribute Range Rule</option>
                 <option value="ACMP">Attribute Compare rule</option>
@@ -49,19 +55,26 @@
                 <option value="ICMP">Inter-Entity Compare rule</option>
               </select>
                 <div class="form-group" id="form_group_operator_arng"><label>Operator</label><br>
-                  <select name="comparison_operator">
+                  <select id="comparison_operator" name="comparison_operator">
                     <option value="-">-- Select an Operator --</option>
                     <option value="BETWEEN">BETWEEN</option>
-                    <option value="NOT BETWEEN">NOT BETWEEN</option>                                                                                              
+                    <option value="!BETWEEN">NOT BETWEEN</option>                                                                                              
                   </select>
                 </div> 
+                <div class="form-group" id="form_group_operator_acmp"><label>Operator</label><br>
+                  <select id="list_operator" name="list_operator">
+                    <option value="-">-- Select an Operator --</option>
+                    <option value="IN">IN</option>
+                    <option value="!IN">NOT IN</option>                                                                                              
+                  </select>
+                </div>                 
                 <div class="form-group" id="form_group_column"><label>Column</label><br>
                   <select id="column1" name="column1">
                     <option value="-">-- Select a Column --</option>
                   </select>
                 </div> 
                 <div class="form-group" id="form_group_operator"><label>Operator</label><br>
-                  <select name="relational_operator">
+                  <select id="relational_operator" name="relational_operator">
                     <option value="-">-- Select an Operator --</option>
                     <option value="=">=</option>
                     <option value="!=">!=</option>
@@ -81,23 +94,24 @@
                     <option value="-">-- Select a Column --</option>
                   </select>
                 </div>   
-                <div class="form-group" id="form_group_value"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value1"></div>
-                <div class="form-group" id="form_group_value_extra"><label>Value</label><input type="text" class="form-control" placeholder="Value" name="value2"></div>
-                <div class="form-group" id="form_group_list"><label>In List</label><input type="text" class="form-control" placeholder="Example: apple, pear, banana" name="form_list"></div>
-                <div class="form-group"><label>Error Message</label><input type="text" class="form-control" placeholder="Error message" name="error"></div>
-                <div class="form-group"><label>Error code</label><input type="number" class="form-control" placeholder="Error message" name="code"></div>
+                <div class="form-group" id="form_group_value"><label>Value</label><input id="value1" type="text" class="form-control" placeholder="Value" name="value1"></div>
+                <div class="form-group" id="form_group_value_extra"><label>Value</label><input id="value2" type="text" class="form-control" placeholder="Value" name="value2"></div>
+                <div class="form-group" id="form_group_list"><label>In List</label><input id="list" type="text" class="form-control" placeholder="Example: apple, pear, banana" name="form_list"></div>
+                <div class="form-group"><label>Error Message</label><input id="error" type="text" class="form-control" placeholder="Error message" name="error" required></div>
+                <div class="form-group"><label>Error code</label><input id="error_code" type="number" class="form-control" placeholder="Error message" name="code" required></div>
                 <input type="hidden" id="form_table" name="current_table">
                 <input type="hidden" id="form_column" name="current_column">
               </div>
             </div>
+            <a class="btn btn-info" id="form_save">Save</a>
+            <a class="btn btn-info" href="table.html">Back</a>
           </form>
         </div>
       </div>
-      <a class="btn btn-info" id="form_save">Save</a>
-      <a class="btn btn-info" href="table.html">Back</a>
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="script/modal.js"></script>            
       <script src="script/rule.js"></script>
     </div>
   </div>
