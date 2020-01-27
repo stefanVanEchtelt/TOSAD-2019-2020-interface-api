@@ -16,20 +16,17 @@ function getBusinessRules() {
         .then((ruleJson) => {
             let index;
             for (index = 0; index < ruleJson.length; index++){
-                // if (ruleJson[index].isExecuted === 1) {
-                //     } else {
-                let code = fetchCode(ruleJson[index].id);
-                // }
+                if (ruleJson[index].isExecuted === 1) {
+                    let code = fetchCode(ruleJson[index].id, 'Run');
+                    } else {
+                    let code = fetchCode(ruleJson[index].id, 'noRun');
+                }
             }
-            $("#"+3).click(function(){handleRun("ooooi")});
-
-            console.log("then myJson");
-
         })
 
 }
 
-function fetchCode(ruleId) {
+function fetchCode(ruleId, runInfo) {
     let py5 = document.getElementById('py-5-id');
     let code;
     fetch('http://localhost:8080/api/tosad/businessRule/rules/businessRules/example/'+ruleId, {method: 'GET'})
@@ -42,13 +39,13 @@ function fetchCode(ruleId) {
         })
         .then((codeJson) => {
             code = codeJson;
-            py5.innerHTML += getCardHtml(code, ruleId);
+            py5.innerHTML += getCardHtml(code, ruleId, runInfo);
 
         })
 }
 
 
-function getCardHtml(ruleName, ruleId) {
+function getCardHtml(ruleName, ruleId, run) {
     let html =
         "<div class=\"container\">\n" +
         "      <div class=\"row\">\n" +
@@ -59,6 +56,21 @@ function getCardHtml(ruleName, ruleId) {
         "                   <pre>    "+
                             ruleName +
         "                   </pre>" +
+        "              </p>";
+        if (run === "Run") {
+            let message = "businessrule has already been executed";
+            let redirect = "close";
+            let btn = '';
+            btn += '<a ';
+            btn += 'onclick="openModal(\'' + message + '\', \'' + redirect + '\') "';
+            btn += 'id="' + ruleId + '" class=\"btn btn-info mr-3\" style=\"\">Executed</a>';
+            html += btn;
+
+        } else if (run === "noRun") {
+            html += "<a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a>"
+        }
+        html +=
+        "               <a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "              </p>" +
         "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "            </div>\n" +
@@ -71,7 +83,6 @@ function getCardHtml(ruleName, ruleId) {
 }
 
 function handleRun(ruleId){
-    console.log(ruleId);
     fetch('http://localhost:8080/api/tosad/businessRule/rules/businessRules/execute/'+ruleId, {method: 'POST'})
         .then((response) => {
             if(response.ok) {
@@ -81,7 +92,7 @@ function handleRun(ruleId){
             }
         })
         .then((codeJson) => {
-            console.log(codeJson);
-            
+            openModal("Business Rule executed succesfully", "table.html")
         })
 }
+
