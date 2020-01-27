@@ -70,9 +70,8 @@ function getCardHtml(ruleName, ruleId, run) {
             html += "<a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a>"
         }
         html +=
-        "               <a class=\"btn btn-info mr-3\" href=\"#.html\">Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
+        "               <a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" onclick=deleteRule(" + ruleId + ")>Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "              </p>" +
-        "               <a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a><a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" href=\"#.html\">Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
         "            </div>\n" +
         "          </div>\n" +
         "        </div>\n" +
@@ -93,6 +92,17 @@ function handleRun(ruleId){
         })
         .then((codeJson) => {
             openModal("Business Rule executed succesfully", "table.html")
+        })
+}
+
+function deleteRule(ruleId) {
+    fetch('/api/tosad/businessRule/businessRule/' + ruleId, {method: 'DELETE'})
+        .then((response) => {
+            if (response.ok){
+                openModal("BusinessRule has been deleted", "reload")
+            } else {
+                openModal("There has been an error while deleting this businessrule", "reload");
+            }
         })
 }
 
