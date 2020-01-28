@@ -68,7 +68,7 @@ function getCardHtml(ruleName, ruleId, run) {
             html += "<a onclick=handleRun("+ ruleId+ ") id=" + ruleId + " class=\"btn btn-info mr-3\" style=\"\">Run</a>"
         }
         html +=
-        "               <a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" onclick=deleteRule(" + ruleId + ")>Delete</a><a class=\"btn btn-info\" href=\"table.html\">Terug</a>\n" +
+        "               <a class=\"btn btn-info mr-3\" href=rule.html?column=" + column_name + "&table=" + table_name + "&rule=" + ruleId + "\>Edit</a><a class=\"btn btn-info mr-3\" onclick=deleteRule(" + ruleId + ")>Delete</a>\n" +
         "              </p>" +
         "            </div>\n" +
         "          </div>\n" +

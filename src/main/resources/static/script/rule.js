@@ -7,6 +7,7 @@ if(urlParams.get('rule') != null){
     fillForm(urlParams.get('rule'));
 }
 
+
 $(document).ready(function() {
     var tableName = urlParams.get('table');
     var columnName = urlParams.get('column');
@@ -15,6 +16,7 @@ $(document).ready(function() {
     $("#form_column").val(columnName);
     $("#head_name").html(columnName);
     $('input[name="rule_name"]').val(tableName + '_' + columnName);
+    $("#back").attr("href", "column.html?table=" + columnName);
 
     fetch('http://localhost:8080/api/tosad/table/' + tableName, {method: 'GET'})
     .then((response) => {
