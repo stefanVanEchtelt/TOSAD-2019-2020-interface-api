@@ -16,7 +16,7 @@ $(document).ready(function() {
     $("#form_column").val(columnName);
     $("#head_name").html(columnName);
     $('input[name="rule_name"]').val(tableName + '_' + columnName);
-    $("#back").attr("href", "column.html?table=" + columnName);
+    $("#back").attr("href", "column.html?table=" + tableName);
 
     fetch('http://localhost:8080/api/tosad/table/' + tableName, {method: 'GET'})
     .then((response) => {
