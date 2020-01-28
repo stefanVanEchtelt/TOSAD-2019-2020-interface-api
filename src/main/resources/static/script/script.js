@@ -10,7 +10,6 @@ function getBusinessRules() {
             if (response.ok) {
                 return response.json();
             } else {
-                console.log("not ok");
             }
         })
         .then((ruleJson) => {
@@ -34,7 +33,6 @@ function fetchCode(ruleId, runInfo) {
             if(response.ok) {
                 return response.json();
             } else {
-                console.log('fetch failed');
             }
         })
         .then((codeJson) => {
@@ -87,7 +85,6 @@ function handleRun(ruleId){
             if(response.ok) {
                 return response.json();
             } else {
-                console.log('fetch failed');
             }
         })
         .then((codeJson) => {

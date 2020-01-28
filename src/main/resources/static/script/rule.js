@@ -168,7 +168,6 @@ function fillForm(id){
                 return response.json();
             }
         }).then((rule) => {
-            console.log(rule.rule);
             $("#trigger_insert").val();
             $("#trigger_update").val();
             $("#trigger_delete").val();
