@@ -138,7 +138,7 @@ function sendRule(){
     let encData = new URLSearchParams(formData.entries());
     var url = "";
     if(urlParams.get('rule') != null){
-        fetch("http://localhost:8080/api/tosad/businessRule/businessRule" + urlParams.get('rule'),  {method: 'DELETE', body: encData})
+        fetch("http://localhost:8080/api/tosad/businessRule/businessRule" + urlParams.get('rule'),  {method: 'DELETE'})
         .then((response) => {
             if (response.ok) {
             }
