@@ -1,3 +1,7 @@
 .trigger-check {
   	margin-left: 10%;
 }
+
+.padding-bot {
+	padding-bottom: 0.5rem !important;
+}

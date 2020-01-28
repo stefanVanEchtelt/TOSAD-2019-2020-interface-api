@@ -45,7 +45,7 @@ function fetchCode(ruleId, runInfo) {
 
 function getCardHtml(ruleName, ruleId, run) {
     let html =
-        "<div class=\"container\">\n" +
+        "<div class=\"container py-1\">\n" +
         "      <div class=\"row\">\n" +
         "        <div class=\"col-md-12\">\n" +
         "          <div class=\"card\">\n" +
