@@ -70,55 +70,56 @@ public class OracleRuleStorage implements RuleStorage {
     private int[] getTypeEid(JSONObject json) throws JSONException {
         String relational_operator = removeBrackString(json.getString("relational_operator"));
         String comparison_operator = removeBrackString(json.getString("comparison_operator"));
+        String list_operator = removeBrackString(json.getString("list_operator"));
+
         int TypeEid = 0;
         int TypeEid2 = 0;
         int TypeEid3 = 0;
 
         if(!relational_operator.equals("")){
-            switch (relational_operator) {
-                case "=":
+                if(comparison_operator.equals("=")) {
                     TypeEid = 3;
-                    break;
-                case "!=":
+                }
+                else if(comparison_operator.equals("!=")) {
                     TypeEid = 2;
                     TypeEid2 = 3;
-                    break;
-                case ">":
+                }
+                else if(comparison_operator.equals(">")) {
                     TypeEid = 6;
-                    break;
-                case "<":
+                }
+                else if(comparison_operator.equals("<")) {
                     TypeEid = 4;
-                    break;
-                case ">=":
+                }
+                else if(comparison_operator.equals(">=")) {
                     TypeEid = 6;
                     TypeEid2 = 1;
                     TypeEid3 = 3;
-                    break;
-                case "<=":
+                }
+                else if(comparison_operator.equals("<=")) {
                     TypeEid = 4;
                     TypeEid2 = 1;
                     TypeEid3 = 3;
-                    break;
+                }
+        }
+        if(!comparison_operator.equals("")){
+            if(comparison_operator.equals("LIKE")){
+                TypeEid = 9;
             }
-        }else {
-            switch (comparison_operator) {
-                case "LIKE":
-                    TypeEid = 9;
-                    break;
-                case "BETWEEN":
-                    TypeEid = 8;
-                    break;
-                case "!BETWEEN":
-                    TypeEid = 2;
-                    TypeEid2 = 8;
-                    break;
-                case "IN":
-                    TypeEid = 5;
-                    break;
-                case "!IN":
-                    TypeEid = 2;
-                    TypeEid2 = 5;
-                    break;
+            else if(comparison_operator.equals("BETWEEN")) {
+                TypeEid = 8;
+            }
+            else if(comparison_operator.equals("!BETWEEN")) {
+                TypeEid = 2;
+                TypeEid2 = 8;
+            }
+        }
+        if(!list_operator.equals("")){
+            if(comparison_operator.equals("IN")) {
+                TypeEid = 5;
+            }
+            if(comparison_operator.equals("!IN")) {
+                TypeEid = 2;
+                TypeEid2 = 5;
             }
         }
         return new int[] {TypeEid, TypeEid2, TypeEid3};
@@ -168,9 +169,15 @@ public class OracleRuleStorage implements RuleStorage {
             if(onType.equals("comp")) {
                 BusinessRuleInf.put("comparison_operator", operator.toString());
                 BusinessRuleInf.put("relational_operator", "");
+                BusinessRuleInf.put("list_operator", "");
             }
-            else{
+            else if(onType.equals("rel")){
                 BusinessRuleInf.put("relational_operator", operator.toString());
+                BusinessRuleInf.put("comparison_operator", "");
+                BusinessRuleInf.put("list_operator", "");
+            } else{
+                BusinessRuleInf.put("list_operator", operator.toString());
+                BusinessRuleInf.put("relational_operator", "");
                 BusinessRuleInf.put("comparison_operator", "");
             }
             return BusinessRuleInf;
