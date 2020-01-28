@@ -72,7 +72,8 @@ rule.change(function(){
             $("#form_group_value").show();
             $("#form_group_value_extra").show();
             $("#form_group_operator_arng").show();
-
+            $("#value1").prop('type', 'number');
+            $("#value2").prop('type', 'number');
             $("#value1").prop('required',true);
             $("#value2").prop('required',true);
             $("#comparison_operator").prop('required',true);            
@@ -80,21 +81,27 @@ rule.change(function(){
         case "ACMP":
             $("#form_group_operator").show();
             $("#form_group_value").show();
-            $("#form_group_operator_acmp").show();
+            $("#value1").prop('type', 'text');                        
+            $("#relational_operator").prop('required',true);                                      
+            $("#value1").prop('required',true);
             break;
         case "ALIS":
             $("#form_group_list").show();
+            $("#form_group_operator_alis").show();            
+            $("#list_operator").prop('required',true);      
             $("#list").prop('required',true);            
             break;
         case "TCMP":
             $("#form_group_column").show();
             $("#form_group_column2").show();    
-            $("#form_group_operator").show();                   
+            $("#form_group_operator").show();
+            $("#relational_operator").prop('required',true);                             
             break;
         case "ICMP":
             $("#form_group_table").show();
             $("#form_group_column2").show();        
-            $("#form_group_operator").show();               
+            $("#form_group_operator").show(); 
+            $("#relational_operator").prop('required',true);                                      
     }
 });
 
@@ -109,11 +116,15 @@ function initForm(){
     $("#form_group_value").hide();
     $("#form_group_value_extra").hide();    
     $("#form_group_list").hide();
+    $("#form_group_operator_alis").hide();            
 
     $("#value1").removeAttr('required');
     $("#value2").removeAttr('required');
     $("#comparison_operator").removeAttr('required'); 
-    $("#list").removeAttr('required');            
+    $("#list").removeAttr('required');   
+    $("#relational_operator").removeAttr('required');            
+    $("#list_operator").removeAttr('required');            
+         
 
 }
 
