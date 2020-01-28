@@ -72,31 +72,30 @@ public class OracleRuleStorage implements RuleStorage {
         String relational_operator = removeBrackString(json.getString("relational_operator"));
         String comparison_operator = removeBrackString(json.getString("comparison_operator"));
         String list_operator = removeBrackString(json.getString("list_operator"));
-        System.out.println("list_operator:    " + list_operator);
         int TypeEid = 0;
         int TypeEid2 = 0;
         int TypeEid3 = 0;
 
         if(!relational_operator.equals("")){
-                if(comparison_operator.equals("=")) {
+                if(relational_operator.equals("=")) {
                     TypeEid = 3;
                 }
-                else if(comparison_operator.equals("!=")) {
+                else if(relational_operator.equals("!=")) {
                     TypeEid = 2;
                     TypeEid2 = 3;
                 }
-                else if(comparison_operator.equals(">")) {
+                else if(relational_operator.equals(">")) {
                     TypeEid = 6;
                 }
-                else if(comparison_operator.equals("<")) {
+                else if(relational_operator.equals("<")) {
                     TypeEid = 4;
                 }
-                else if(comparison_operator.equals(">=")) {
+                else if(relational_operator.equals(">=")) {
                     TypeEid = 6;
                     TypeEid2 = 1;
                     TypeEid3 = 3;
                 }
-                else if(comparison_operator.equals("<=")) {
+                else if(relational_operator.equals("<=")) {
                     TypeEid = 4;
                     TypeEid2 = 1;
                     TypeEid3 = 3;
@@ -115,15 +114,12 @@ public class OracleRuleStorage implements RuleStorage {
             }
         }
         if(!list_operator.equals("")){
-            System.out.println(list_operator);
             if(list_operator.equals("IN")) {
                 TypeEid = 5;
-                System.out.println("in");
             }
             if(list_operator.equals("!IN")) {
                 TypeEid = 2;
                 TypeEid2 = 5;
-                System.out.println("!in");
             }
         }
         return new int[] {TypeEid, TypeEid2, TypeEid3};
