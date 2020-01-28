@@ -43,6 +43,12 @@ $(document).ready(function() {
 
     $("select[name='comparison_operator']").change(function(){
         $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val() + '_' + $("select[name='comparison_operator']").val());
+        $('input[name="rule_name"]').val($('input[name="rule_name"]').val().replace("!", "NOT"));
+    });
+
+    $("select[name='list_operator']").change(function(){
+        $('input[name="rule_name"]').val(tableName + '_' + columnName  + '_' + $("#form_rule").val() + '_' + $("select[name='comparison_operator']").val());
+        $('input[name="rule_name"]').val($('input[name="rule_name"]').val().replace("!", "NOT"));    
     });
 });
 
