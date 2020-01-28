@@ -28,6 +28,7 @@ public class OracleRuleStorage implements RuleStorage {
         int sortOrder = 1;
         for(int typeEid : TypesEid){
             if(typeEid !=0) {
+                System.out.println("typeEid int addBusinessRule:     " + typeEid);
                 rulesIds.add(addBusinessRuleSub(typeEid, sortOrder, businessRuleId, eventType));
                 sortOrder++;
             }
@@ -71,7 +72,7 @@ public class OracleRuleStorage implements RuleStorage {
         String relational_operator = removeBrackString(json.getString("relational_operator"));
         String comparison_operator = removeBrackString(json.getString("comparison_operator"));
         String list_operator = removeBrackString(json.getString("list_operator"));
-
+        System.out.println("list_operator:    " + list_operator);
         int TypeEid = 0;
         int TypeEid2 = 0;
         int TypeEid3 = 0;
@@ -114,12 +115,15 @@ public class OracleRuleStorage implements RuleStorage {
             }
         }
         if(!list_operator.equals("")){
-            if(comparison_operator.equals("IN")) {
+            System.out.println(list_operator);
+            if(list_operator.equals("IN")) {
                 TypeEid = 5;
+                System.out.println("in");
             }
-            if(comparison_operator.equals("!IN")) {
+            if(list_operator.equals("!IN")) {
                 TypeEid = 2;
                 TypeEid2 = 5;
+                System.out.println("!in");
             }
         }
         return new int[] {TypeEid, TypeEid2, TypeEid3};

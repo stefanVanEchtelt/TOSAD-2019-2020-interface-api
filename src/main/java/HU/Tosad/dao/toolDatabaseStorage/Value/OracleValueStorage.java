@@ -42,7 +42,7 @@ public class OracleValueStorage implements ValueStorage {
 
             //storing value List Compare Rule
             case "ALIS":
-                String[] values = json.getString("form_list").split(", ");
+                String[] values = removeBrackString(json.getString("form_list")).split(", ");
                 int sortOrder = 1;
                 for (String value : values) {
                     StoreBusinessRule(value, 0, sortOrder, Ruleid);
