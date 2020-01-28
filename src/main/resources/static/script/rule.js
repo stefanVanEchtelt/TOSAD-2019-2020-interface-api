@@ -204,6 +204,13 @@ function validateForm(){
             filled = false;
         }
     });
+    checked = $("input[type=checkbox]:checked").length;
+    if(!checked) {
+        $(".form-check-label").each(function(){
+            $(this).css('color', 'red');
+        });
+        filled = false;
+    }
     return filled;
 }
 
